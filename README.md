@@ -1,81 +1,36 @@
-# Project Exodus - Legal Web (Privacy Policy & EULA)
+# Project Exodus — Legal Documentation
 
-Este repositorio contiene la página web estática oficial de la **Política de Privacidad** y el **Acuerdo de Licencia de Usuario Final (EULA)** para *Project Exodus* (AstroxStudio).
+Official public repository for the **Privacy Policy** and **End User License Agreement (EULA)** for **Project Exodus**, developed by **AstroxStudio**.
 
-Está optimizada con:
-- **Diseño profesional oscuro** adaptado a la estética del videojuego.
-- **Soporte multilingüe instantáneo** con selector (Inglés por defecto, Español incluido).
-- **Pestañas navegables con soporte de anclas (Hash URLs)** para poner enlaces separados en Steamworks:
-  - `https://<tu-usuario>.github.io/<tu-repo>/#privacy`
-  - `https://<tu-usuario>.github.io/<tu-repo>/#eula`
-- **Cero dependencias:** No requiere Node.js, React ni compilación. Carga instantáneamente y es 100% compatible con **GitHub Pages**.
+🌐 **Official Live Site:** [https://astroxdevz.github.io/project-exodus-legal/](https://astroxdevz.github.io/project-exodus-legal/)
 
 ---
 
-## 🚀 Cómo publicarlo gratis en GitHub Pages (Paso a paso)
+## Overview
 
-### Paso 1: Crear un nuevo repositorio en GitHub
-1. Entra en tu cuenta de [GitHub](https://github.com/) y pulsa en **New repository**.
-2. Dale un nombre (por ejemplo: `project-exodus-legal` o `privacy-policy`).
-3. Elige que sea **Público** (Public) y pulsa en **Create repository**.
+This repository hosts the public-facing legal and privacy documentation for *Project Exodus*. The documentation is available in multiple languages (English and Spanish) and covers:
 
-### Paso 2: Subir los archivos
-Puedes subir los archivos mediante Git por consola o directamente arrastrando el archivo `index.html` en la web de GitHub:
-
-**Vía terminal (Git):**
-```bash
-cd ProjectM-Legal-Web
-git init
-git add index.html README.md
-git commit -m "Initial commit: Privacy Policy and EULA"
-git branch -M main
-git remote add origin https://github.com/<TU_USUARIO>/<TU_REPOSITORIO>.git
-git push -u origin main
-```
-
-*(O en la web de GitHub pulsa en "Uploading an existing file", arrastra `index.html` y haz commit).*
-
-### Paso 3: Activar GitHub Pages
-1. En tu repositorio de GitHub, haz clic en la pestaña **Settings** (arriba a la derecha).
-2. En la barra lateral izquierda, pulsa en **Pages**.
-3. En **Build and deployment > Branch**:
-   - Selecciona la rama: **`main`**.
-   - Carpeta: **`/ (root)`**.
-   - Pulsa en **Save**.
-4. En 30 segundos, GitHub te dará tu URL pública con HTTPS gratis:
-   `https://<TU_USUARIO>.github.io/<TU_REPOSITORIO>/`
+- **Privacy Policy (`#privacy`):** Explains our commitment to player privacy, our strict Zero PII (Personally Identifiable Information) policy, and details on anonymous gameplay telemetry used exclusively for gameplay balance and level design improvements.
+- **End User License Agreement (`#eula`):** Outlines licensing terms, acceptable multiplayer conduct, fair play policies, and general software terms.
 
 ---
 
-## 🎮 Enlaces para Steamworks
+## Key Privacy Highlights
 
-Una vez publicado en GitHub Pages, pon estos dos enlaces exactos en tu panel de **Steamworks** (*Edit Store Page > Basic Info*):
-
-1. **Privacy Policy URL:**
-   ```text
-   https://<TU_USUARIO>.github.io/<TU_REPOSITORIO>/#privacy
-   ```
-2. **EULA URL:**
-   ```text
-   https://<TU_USUARIO>.github.io/<TU_REPOSITORIO>/#eula
-   ```
-
-*Nota: También puedes forzar el idioma en la URL si lo deseas:*
-- `https://<TU_USUARIO>.github.io/<TU_REPOSITORIO>/?lang=en#privacy` (Inglés)
-- `https://<TU_USUARIO>.github.io/<TU_REPOSITORIO>/?lang=es#privacy` (Español)
+- **Zero PII:** We do not collect real names, email addresses, IP addresses, hardware identifiers, or Steam IDs (SteamID64).
+- **Anonymous Telemetry:** Gameplay metrics (such as difficulty curves, round completion, and spatial death positions) are tied solely to an ephemeral, locally generated random UUID.
+- **Player Control:** Players can opt out of gameplay telemetry at any time directly through the in-game settings menu (*Settings > Gameplay*).
 
 ---
 
-## 🌐 Cómo añadir más idiomas en el futuro (ej. Francés, Alemán, Chino)
-En el archivo `index.html`:
-1. En el encabezado (`.lang-switch`), añade un nuevo botón con el código del idioma:
-   ```html
-   <button class="lang-btn" data-lang="de">DE</button>
-   ```
-2. Dentro de cada sección (`#privacy` y `#eula`), añade un bloque con la clase correspondiente:
-   ```html
-   <div class="lang-content lang-de" style="display: none;">
-       <!-- Texto traducido -->
-   </div>
-   ```
-3. En el script de abajo, añade los textos clave en el objeto `i18n.de`.
+## Contact & Inquiries
+
+For legal, privacy, or support questions:
+
+- **Developer:** AstroxStudio / AstroxDevz
+- **Contact:** `support@astroxstudio.com`
+- **Steam Community Hub:** *Project Exodus Discussions*
+
+---
+
+*© 2026 AstroxStudio. All rights reserved. Valve and Steam are trademarks and/or registered trademarks of Valve Corporation in the U.S. and/or other countries.*
