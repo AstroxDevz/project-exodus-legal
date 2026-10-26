@@ -28,7 +28,7 @@ This repository hosts the public-facing legal and privacy documentation for *Pro
 For legal, privacy, or support questions:
 
 - **Developer:** AstroxStudio / AstroxDevz
-- **Contact:** `support@astroxstudio.com`
+- **Contact:** `dev.astrox@gmail.com`
 - **Steam Community Hub:** *Project Exodus Discussions*
 
 ---
