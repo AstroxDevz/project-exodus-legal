@@ -3,26 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AstroxDevz | Official Studio & Project Exodus</title>
-    <meta name="description" content="Official website of AstroxDevz, creators of Project Exodus — a tense sci-fi cooperative extraction survival game.">
+    <title>AstroxDevz | Project Exodus — Official Studio & Game Website</title>
+    <meta name="description" content="Official website of AstroxDevz and Project Exodus — a tense sci-fi cooperative extraction survival horror game powered by Unreal Engine 5.">
+    <link rel="icon" type="image/png" href="assets/branding/favicon.png">
+
+    <!-- Open Graph / Meta -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://astroxdevz.com/">
+    <meta property="og:title" content="Project Exodus | AstroxDevz">
+    <meta property="og:description" content="Co-op extraction horror. Hunt mutated specimens, harvest volatile Biomass, and survive the quota.">
+    <meta property="og:image" content="https://astroxdevz.com/assets/branding/capsule_main.png">
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
     <style>
         :root {
-            --bg-primary: #07090e;
-            --bg-secondary: #0d121c;
-            --bg-card: #131a29;
-            --bg-card-hover: #1a2336;
+            --bg-primary: #06080d;
+            --bg-secondary: #0b0f19;
+            --bg-card: #111726;
+            --bg-card-hover: #172033;
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
             --text-muted: #64748b;
             --accent-cyan: #00d2ff;
             --accent-blue: #3b82f6;
             --accent-purple: #8b5cf6;
-            --accent-green: #10b981;
+            --accent-danger: #ef4444;
+            --accent-warning: #f59e0b;
             --border-color: rgba(255, 255, 255, 0.08);
-            --border-glow: rgba(0, 210, 255, 0.25);
+            --border-glow: rgba(0, 210, 255, 0.3);
             --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
         }
@@ -45,37 +57,38 @@
             overflow-x: hidden;
             background-image: 
                 radial-gradient(circle at 15% 10%, rgba(59, 130, 246, 0.12) 0%, transparent 45%),
-                radial-gradient(circle at 85% 30%, rgba(0, 210, 255, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 50% 85%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
+                radial-gradient(circle at 85% 25%, rgba(0, 210, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(139, 92, 246, 0.07) 0%, transparent 55%);
             background-attachment: fixed;
         }
 
-        /* HEADER & NAVIGATION */
+        /* HEADER & NAVBAR */
         header {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            background: rgba(7, 9, 14, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(6, 8, 13, 0.88);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
             border-bottom: 1px solid var(--border-color);
             z-index: 1000;
         }
 
         .nav-container {
-            max-width: 1200px;
+            max-width: 1240px;
             margin: 0 auto;
-            padding: 1rem 1.5rem;
+            padding: 0.85rem 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 1.5rem;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 0.65rem;
+            gap: 0.75rem;
             text-decoration: none;
             color: #fff;
             font-size: 1.25rem;
@@ -83,24 +96,18 @@
             letter-spacing: -0.03em;
         }
 
-        .logo-symbol {
+        .logo-img {
             width: 32px;
             height: 32px;
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
             border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #07090e;
-            font-weight: 900;
-            font-size: 1.1rem;
-            box-shadow: 0 0 16px rgba(0, 210, 255, 0.4);
+            object-fit: contain;
+            box-shadow: 0 0 14px rgba(0, 210, 255, 0.35);
         }
 
         .nav-links {
             display: flex;
             align-items: center;
-            gap: 2rem;
+            gap: 1.8rem;
             list-style: none;
         }
 
@@ -116,20 +123,60 @@
             color: var(--accent-cyan);
         }
 
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* LANGUAGE SWITCHER */
+        .lang-switch {
+            display: flex;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.2rem;
+            gap: 0.2rem;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            font-weight: 700;
+            padding: 0.3rem 0.65rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .lang-btn:hover {
+            color: #fff;
+        }
+
+        .lang-btn.active {
+            background: var(--bg-card);
+            color: var(--accent-cyan);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        /* STEAM BUTTON */
         .btn-steam {
             background: linear-gradient(135deg, #1b2838, #2a475e);
             border: 1px solid rgba(102, 192, 244, 0.4);
             color: #c7d5e0;
             text-decoration: none;
-            padding: 0.55rem 1.1rem;
+            padding: 0.55rem 1.15rem;
             border-radius: 8px;
             font-size: 0.88rem;
             font-weight: 600;
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.55rem;
             transition: all 0.2s ease;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            white-space: nowrap;
         }
 
         .btn-steam:hover {
@@ -137,32 +184,52 @@
             color: #fff;
             border-color: #66c0f4;
             transform: translateY(-1px);
-            box-shadow: 0 4px 18px rgba(102, 192, 244, 0.35);
+            box-shadow: 0 4px 20px rgba(102, 192, 244, 0.4);
         }
 
         /* HERO SECTION */
         .hero {
-            padding: 9rem 1.5rem 5rem;
-            max-width: 1200px;
+            position: relative;
+            padding: 10rem 1.5rem 6.5rem;
+            max-width: 1240px;
             margin: 0 auto;
             text-align: center;
-            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 1400px;
+            height: 100%;
+            background-image: 
+                linear-gradient(180deg, rgba(6, 8, 13, 0.6) 0%, rgba(6, 8, 13, 0.85) 60%, var(--bg-primary) 100%),
+                url('assets/branding/hero.png');
+            background-size: cover;
+            background-position: center top;
+            opacity: 0.5;
+            z-index: -1;
+            filter: contrast(1.15) saturate(1.1);
         }
 
         .hero-badge {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            background: rgba(0, 210, 255, 0.08);
+            gap: 0.55rem;
+            background: rgba(0, 210, 255, 0.1);
             border: 1px solid var(--border-glow);
-            padding: 0.35rem 0.9rem;
+            padding: 0.4rem 1rem;
             border-radius: 9999px;
             color: var(--accent-cyan);
             font-size: 0.82rem;
-            font-weight: 600;
-            letter-spacing: 0.04em;
+            font-weight: 700;
+            letter-spacing: 0.05em;
             text-transform: uppercase;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(8px);
         }
 
         .pulse-dot {
@@ -176,26 +243,28 @@
 
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(1.3); }
+            50% { opacity: 0.35; transform: scale(1.3); }
         }
 
-        .hero h1 {
-            font-size: 4rem;
-            font-weight: 900;
-            letter-spacing: -0.04em;
-            line-height: 1.05;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(180deg, #ffffff 40%, #94a3b8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .hero-logo-wrap {
+            max-width: 620px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .hero-logo-img {
+            width: 100%;
+            height: auto;
+            max-height: 140px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 25px rgba(0, 210, 255, 0.45));
         }
 
         .hero p {
             font-size: 1.25rem;
             color: var(--text-secondary);
-            max-width: 720px;
+            max-width: 780px;
             margin: 0 auto 2.5rem;
-            font-weight: 400;
+            line-height: 1.7;
         }
 
         .hero-actions {
@@ -204,39 +273,44 @@
             justify-content: center;
             gap: 1rem;
             flex-wrap: wrap;
+            margin-bottom: 3.5rem;
         }
 
         .btn-primary {
             background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
-            color: #07090e;
+            color: #050913;
             font-weight: 700;
-            font-size: 1rem;
-            padding: 0.85rem 1.85rem;
+            font-size: 1.05rem;
+            padding: 0.9rem 2rem;
             border-radius: 10px;
             text-decoration: none;
             transition: all 0.25s ease;
-            box-shadow: 0 8px 24px rgba(0, 210, 255, 0.3);
+            box-shadow: 0 8px 24px rgba(0, 210, 255, 0.35);
             display: inline-flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: 0.65rem;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(0, 210, 255, 0.45);
+            box-shadow: 0 12px 32px rgba(0, 210, 255, 0.55);
             filter: brightness(1.1);
         }
 
         .btn-secondary {
-            background: var(--bg-card);
+            background: rgba(17, 23, 38, 0.9);
             border: 1px solid var(--border-color);
             color: #fff;
             font-weight: 600;
             font-size: 1rem;
-            padding: 0.85rem 1.85rem;
+            padding: 0.9rem 1.85rem;
             border-radius: 10px;
             text-decoration: none;
             transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            backdrop-filter: blur(8px);
         }
 
         .btn-secondary:hover {
@@ -245,55 +319,176 @@
             transform: translateY(-2px);
         }
 
-        /* SECTION TITLES */
+        .hero-pills {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .pill-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1.1rem;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+        }
+
+        .pill-item svg {
+            color: var(--accent-cyan);
+        }
+
+        /* SECTION HEADERS */
         .section-header {
             text-align: center;
-            max-width: 680px;
+            max-width: 720px;
             margin: 0 auto 3.5rem;
         }
 
         .section-tag {
             color: var(--accent-cyan);
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 0.5rem;
+            letter-spacing: 0.12em;
+            margin-bottom: 0.6rem;
             display: block;
         }
 
         .section-header h2 {
-            font-size: 2.35rem;
+            font-size: 2.4rem;
             font-weight: 800;
             letter-spacing: -0.03em;
             color: #fff;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.85rem;
         }
 
         .section-header p {
             color: var(--text-secondary);
             font-size: 1.05rem;
+            line-height: 1.65;
         }
 
-        /* FEATURES GRID */
-        .features {
-            max-width: 1200px;
+        /* TRAILER SECTION */
+        .trailer-section {
+            max-width: 1240px;
             margin: 0 auto;
-            padding: 3rem 1.5rem 6rem;
+            padding: 3rem 1.5rem 6.5rem;
+        }
+
+        .trailer-wrapper {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            position: relative;
+        }
+
+        .trailer-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .trailer-tabs {
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.3rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .trailer-tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.55rem 1.25rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .trailer-tab-btn.active {
+            background: var(--bg-card);
+            color: var(--accent-cyan);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        .trailer-ext-links {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .trailer-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.5rem 0.9rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .trailer-link:hover {
+            color: #fff;
+            border-color: var(--border-glow);
+            background: var(--bg-card);
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            border-radius: 14px;
+            overflow: hidden;
+            background: #000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* FEATURES SECTION */
+        .features {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem 6.5rem;
         }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 1.5rem;
         }
 
         .feature-card {
             background: var(--bg-secondary);
             border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 2rem;
-            transition: all 0.3s ease;
+            border-radius: 16px;
+            padding: 2.25rem 2rem;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
         }
@@ -313,7 +508,7 @@
         .feature-card:hover {
             border-color: var(--border-glow);
             transform: translateY(-4px);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45);
         }
 
         .feature-card:hover::before {
@@ -321,54 +516,303 @@
         }
 
         .feature-icon {
-            width: 48px;
-            height: 48px;
+            width: 52px;
+            height: 52px;
             background: rgba(0, 210, 255, 0.1);
-            border: 1px solid rgba(0, 210, 255, 0.2);
+            border: 1px solid rgba(0, 210, 255, 0.25);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 1.25rem;
+            margin-bottom: 1.5rem;
             color: var(--accent-cyan);
         }
 
         .feature-card h3 {
-            font-size: 1.25rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: #fff;
             margin-bottom: 0.75rem;
+            letter-spacing: -0.01em;
         }
 
         .feature-card p {
             color: var(--text-secondary);
-            font-size: 0.95rem;
-            line-height: 1.6;
+            font-size: 0.98rem;
+            line-height: 1.65;
         }
 
-        /* OVERVIEW BANNER */
-        .game-banner {
-            max-width: 1200px;
+        /* BESTIARY / SPECIMEN SECTION */
+        .bestiary-section {
+            max-width: 1240px;
             margin: 0 auto;
-            padding: 0 1.5rem 6rem;
+            padding: 3rem 1.5rem 6.5rem;
+        }
+
+        .bestiary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .specimen-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .specimen-card:hover {
+            border-color: var(--border-glow);
+            transform: translateY(-5px);
+            box-shadow: 0 16px 36px rgba(0, 210, 255, 0.18);
+        }
+
+        .specimen-img-wrap {
+            position: relative;
+            background: #060911;
+            padding: 1.25rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            aspect-ratio: 1 / 1;
+        }
+
+        .specimen-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.4s ease;
+            filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.6));
+        }
+
+        .specimen-card:hover .specimen-img {
+            transform: scale(1.08);
+        }
+
+        .specimen-threat {
+            position: absolute;
+            top: 0.85rem;
+            right: 0.85rem;
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 0.25rem 0.65rem;
+            border-radius: 4px;
+            letter-spacing: 0.05em;
+        }
+
+        .threat-extreme {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            color: #ef4444;
+        }
+
+        .threat-high {
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            color: #f59e0b;
+        }
+
+        .threat-medium {
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.5);
+            color: #c084fc;
+        }
+
+        .threat-special {
+            background: rgba(0, 210, 255, 0.2);
+            border: 1px solid rgba(0, 210, 255, 0.5);
+            color: #00d2ff;
+        }
+
+        .specimen-info {
+            padding: 1.4rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .specimen-code {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            color: var(--accent-cyan);
+            letter-spacing: 0.05em;
+            margin-bottom: 0.35rem;
+        }
+
+        .specimen-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.6rem;
+        }
+
+        .specimen-desc {
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            line-height: 1.55;
+        }
+
+        /* SCREENSHOTS GALLERY */
+        .gallery-section {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem 6.5rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            cursor: pointer;
+            aspect-ratio: 16 / 9;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            border-color: var(--border-glow);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+            display: block;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(0deg, rgba(6, 8, 13, 0.85) 0%, rgba(6, 8, 13, 0.2) 50%, transparent 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 1.25rem;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-title {
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .gallery-sub {
+            color: var(--accent-cyan);
+            font-size: 0.78rem;
+            font-family: var(--font-mono);
+            margin-top: 0.2rem;
+        }
+
+        /* LIGHTBOX MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(3, 5, 8, 0.94);
+            z-index: 2000;
+            padding: 2rem;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 88vh;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9);
+            border: 1px solid var(--border-glow);
+        }
+
+        .modal-content img {
+            display: block;
+            max-width: 100%;
+            max-height: 88vh;
+            object-fit: contain;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: var(--accent-cyan);
+            color: #000;
+        }
+
+        /* OVERVIEW & SPECS */
+        .game-banner {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 1.5rem 6.5rem;
         }
 
         .banner-box {
-            background: linear-gradient(135deg, rgba(13, 18, 28, 0.95), rgba(19, 26, 41, 0.85));
+            background: linear-gradient(135deg, rgba(11, 15, 25, 0.95), rgba(17, 23, 38, 0.9));
             border: 1px solid var(--border-color);
             border-radius: 20px;
-            padding: 3.5rem;
+            padding: 3rem;
             display: grid;
-            grid-template-columns: 1.2fr 1fr;
+            grid-template-columns: 320px 1fr;
             gap: 3rem;
             align-items: center;
             position: relative;
-            overflow: hidden;
             box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5);
         }
 
+        .banner-poster {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+            display: block;
+        }
+
         .banner-content h3 {
-            font-size: 2.1rem;
+            font-size: 2.2rem;
             font-weight: 800;
             color: #fff;
             letter-spacing: -0.02em;
@@ -378,22 +822,22 @@
         .banner-content p {
             color: var(--text-secondary);
             font-size: 1.05rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.8rem;
             line-height: 1.7;
         }
 
         .specs-list {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1rem;
             list-style: none;
-            margin-top: 2rem;
+            margin-bottom: 2rem;
         }
 
         .spec-item {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            padding: 0.85rem 1.1rem;
+            padding: 0.9rem 1.15rem;
             border-radius: 10px;
         }
 
@@ -401,53 +845,94 @@
             font-size: 0.75rem;
             color: var(--text-muted);
             text-transform: uppercase;
-            font-weight: 600;
+            font-weight: 700;
             letter-spacing: 0.05em;
         }
 
         .spec-value {
-            font-size: 0.95rem;
+            font-size: 0.98rem;
             color: #fff;
             font-weight: 700;
-            margin-top: 0.2rem;
+            margin-top: 0.25rem;
         }
 
         /* ABOUT STUDIO */
         .about {
-            max-width: 1200px;
+            max-width: 1240px;
             margin: 0 auto;
-            padding: 0 1.5rem 6rem;
+            padding: 0 1.5rem 6.5rem;
         }
 
         .about-card {
             background: var(--bg-secondary);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 3rem;
+            border-radius: 20px;
+            padding: 3.5rem 2.5rem;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(0, 210, 255, 0.06), transparent 70%);
+            pointer-events: none;
         }
 
         .about-card h2 {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 800;
             color: #fff;
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
         }
 
         .about-card p {
             color: var(--text-secondary);
-            font-size: 1.05rem;
-            max-width: 720px;
-            margin: 0 auto 2rem;
+            font-size: 1.1rem;
+            max-width: 760px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.75;
+        }
+
+        .about-socials {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.75rem 1.4rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .social-btn:hover {
+            border-color: var(--border-glow);
+            transform: translateY(-2px);
+            color: var(--accent-cyan);
         }
 
         .contact-box {
             display: inline-flex;
             align-items: center;
             gap: 0.75rem;
-            background: var(--bg-card);
+            background: var(--bg-primary);
             border: 1px solid var(--border-color);
-            padding: 0.75rem 1.5rem;
+            padding: 0.85rem 1.6rem;
             border-radius: 9999px;
             font-size: 0.95rem;
             color: #fff;
@@ -463,36 +948,37 @@
         footer {
             border-top: 1px solid var(--border-color);
             background: var(--bg-secondary);
-            padding: 3.5rem 1.5rem 2.5rem;
+            padding: 4rem 1.5rem 3rem;
         }
 
         .footer-container {
-            max-width: 1200px;
+            max-width: 1240px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
         }
 
         .footer-brand p {
             color: var(--text-muted);
-            font-size: 0.88rem;
-            margin-top: 0.35rem;
+            font-size: 0.9rem;
+            margin-top: 0.4rem;
         }
 
         .footer-links {
             display: flex;
-            gap: 1.5rem;
+            gap: 1.8rem;
             list-style: none;
+            flex-wrap: wrap;
         }
 
         .footer-links a {
             color: var(--text-secondary);
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.92rem;
             transition: color 0.2s;
         }
 
@@ -501,19 +987,47 @@
         }
 
         .footer-bottom {
-            max-width: 1200px;
+            max-width: 1240px;
             margin: 0 auto;
-            padding-top: 1.5rem;
+            padding-top: 2rem;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             text-align: center;
             color: var(--text-muted);
-            font-size: 0.82rem;
+            font-size: 0.84rem;
+            line-height: 1.6;
         }
 
-        @media (max-width: 900px) {
-            .hero h1 { font-size: 2.75rem; }
-            .banner-box { grid-template-columns: 1fr; padding: 2rem; }
-            .nav-links { display: none; }
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 1024px) {
+            .banner-box {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .banner-poster {
+                max-width: 320px;
+                margin: 0 auto;
+            }
+            .specs-list {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 860px) {
+            .nav-links {
+                display: none;
+            }
+            .hero {
+                padding-top: 8rem;
+            }
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .section-header h2 {
+                font-size: 2rem;
+            }
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -523,122 +1037,410 @@
     <header>
         <div class="nav-container">
             <a href="#" class="logo">
-                <div class="logo-symbol">A</div>
+                <img src="assets/branding/favicon.png" alt="AstroxDevz Logo" class="logo-img">
                 <span>AstroxDevz</span>
             </a>
             <ul class="nav-links">
-                <li><a href="#game">Project Exodus</a></li>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#about">Studio</a></li>
-                <li><a href="legal.html#privacy">Privacy Policy</a></li>
-                <li><a href="legal.html#eula">EULA</a></li>
+                <li><a href="#game" data-i18n="nav_game">Project Exodus</a></li>
+                <li><a href="#trailer" data-i18n="nav_trailer">Trailer</a></li>
+                <li><a href="#features" data-i18n="nav_features">Features</a></li>
+                <li><a href="#specimens" data-i18n="nav_specimens">Specimens</a></li>
+                <li><a href="#gallery" data-i18n="nav_gallery">Screenshots</a></li>
+                <li><a href="#about" data-i18n="nav_studio">Studio</a></li>
+                <li><a href="legal.html#privacy" data-i18n="nav_privacy">Privacy</a></li>
+                <li><a href="legal.html#eula" data-i18n="nav_eula">EULA</a></li>
             </ul>
-            <a href="https://store.steampowered.com" target="_blank" rel="noopener noreferrer" class="btn-steam">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.029 4.524 4.524s-2.03 4.524-4.524 4.524h-.105l-4.076 2.911c0 .052.005.105.005.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.707L.42 15.083C1.726 20.24 6.402 24 11.979 24c6.627 0 12-5.373 12-12s-5.373-12-12-12z"/></svg>
-                <span>Wishlist on Steam</span>
-            </a>
+            <div class="nav-right">
+                <!-- LANGUAGE SWITCHER -->
+                <div class="lang-switch">
+                    <button class="lang-btn active" data-lang="en">EN</button>
+                    <button class="lang-btn" data-lang="es">ES</button>
+                </div>
+                <!-- STEAM LINK -->
+                <a href="https://store.steampowered.com/app/4149590/Project_Exodus/" target="_blank" rel="noopener noreferrer" class="btn-steam">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.029 4.524 4.524s-2.03 4.524-4.524 4.524h-.105l-4.076 2.911c0 .052.005.105.005.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.707L.42 15.083C1.726 20.24 6.402 24 11.979 24c6.627 0 12-5.373 12-12s-5.373-12-12-12z"/></svg>
+                    <span data-i18n="btn_steam_wishlist">Wishlist on Steam</span>
+                </a>
+            </div>
         </div>
     </header>
 
-    <!-- HERO -->
+    <!-- HERO SECTION -->
     <section class="hero" id="game">
+        <div class="hero-bg"></div>
         <div class="hero-badge">
             <div class="pulse-dot"></div>
-            <span>Now in Active Development • Powered by Unreal Engine 5</span>
+            <span data-i18n="hero_badge">NOW IN ACTIVE DEVELOPMENT • POWERED BY UNREAL ENGINE 5</span>
         </div>
-        <h1>PROJECT EXODUS</h1>
-        <p>A tense cooperative extraction survival thriller. Infiltrate abandoned planetary complexes, extract volatile biomass, capture hostile alien specimens, and survive the quota deadline.</p>
+        <div class="hero-logo-wrap">
+            <img src="assets/branding/logo.png" alt="Project Exodus Title" class="hero-logo-img">
+        </div>
+        <p data-i18n="hero_tagline">A tense cooperative extraction survival thriller. Infiltrate abandoned planetary complexes, extract volatile Biomass, capture hostile specimens alive, and survive the syndicate quota.</p>
         <div class="hero-actions">
-            <a href="https://store.steampowered.com" target="_blank" rel="noopener noreferrer" class="btn-primary">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.029 4.524 4.524s-2.03 4.524-4.524 4.524h-.105l-4.076 2.911c0 .052.005.105.005.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.707L.42 15.083C1.726 20.24 6.402 24 11.979 24c6.627 0 12-5.373 12-12s-5.373-12-12-12z"/></svg>
-                <span>Wishlist on Steam</span>
+            <a href="https://store.steampowered.com/app/4149590/Project_Exodus/" target="_blank" rel="noopener noreferrer" class="btn-primary">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.029 4.524 4.524s-2.03 4.524-4.524 4.524h-.105l-4.076 2.911c0 .052.005.105.005.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.707L.42 15.083C1.726 20.24 6.402 24 11.979 24c6.627 0 12-5.373 12-12s-5.373-12-12-12z"/></svg>
+                <span data-i18n="btn_hero_steam">Wishlist on Steam</span>
             </a>
-            <a href="#features" class="btn-secondary">Explore Features</a>
+            <a href="#trailer" class="btn-secondary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <span data-i18n="btn_hero_trailer">Watch Trailer</span>
+            </a>
+            <a href="#specimens" class="btn-secondary">
+                <span data-i18n="btn_hero_specimens">Specimen Archive</span>
+            </a>
+        </div>
+        <div class="hero-pills">
+            <div class="pill-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <span data-i18n="pill_coop">1 - 6 Players Online Co-op</span>
+            </div>
+            <div class="pill-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                <span data-i18n="pill_voice">Proximity Voice Chat</span>
+            </div>
+            <div class="pill-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M15 3v18"/><path d="M3 9h18"/><path d="M3 15h18"/></svg>
+                <span data-i18n="pill_procedural">Procedural Complex Generation</span>
+            </div>
         </div>
     </section>
 
-    <!-- FEATURES -->
+    <!-- TRAILER SECTION -->
+    <section class="trailer-section" id="trailer">
+        <div class="section-header">
+            <span class="section-tag" data-i18n="trailer_tag">Official Media</span>
+            <h2 data-i18n="trailer_heading">Watch the Official Trailer</h2>
+            <p data-i18n="trailer_sub">Watch first-hand footage of tense cooperative expeditions, alive specimen captures, and the harrowing horrors that stalk the deep sector.</p>
+        </div>
+
+        <div class="trailer-wrapper">
+            <div class="trailer-controls">
+                <div class="trailer-tabs">
+                    <button class="trailer-tab-btn active" data-vid="KHvduP4aHZw" data-i18n="tab_gameplay_trailer">Gameplay Trailer</button>
+                    <button class="trailer-tab-btn" data-vid="3nkYiQkv1hU" data-i18n="tab_cinematic_trailer">Cinematic Trailer</button>
+                </div>
+                <div class="trailer-ext-links">
+                    <a href="https://www.youtube.com/@AstroxDevz" target="_blank" rel="noopener noreferrer" class="trailer-link">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        <span data-i18n="link_yt_channel">YouTube Channel</span>
+                    </a>
+                    <a href="https://store.steampowered.com/app/4149590/Project_Exodus/" target="_blank" rel="noopener noreferrer" class="trailer-link">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.029 4.524 4.524s-2.03 4.524-4.524 4.524h-.105l-4.076 2.911c0 .052.005.105.005.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.707L.42 15.083C1.726 20.24 6.402 24 11.979 24c6.627 0 12-5.373 12-12s-5.373-12-12-12z"/></svg>
+                        <span data-i18n="link_steam_hub">Steam Hub</span>
+                    </a>
+                </div>
+            </div>
+            <div class="video-container">
+                <iframe id="main-trailer-iframe" src="https://www.youtube-nocookie.com/embed/KHvduP4aHZw?rel=0" title="Project Exodus Trailer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- CORE FEATURES -->
     <section class="features" id="features">
         <div class="section-header">
-            <span class="section-tag">Core Gameplay Loop</span>
-            <h2>Survive the Extraction</h2>
-            <p>Every mission into the deep sector is an escalation of risk, teamwork, and resource management.</p>
+            <span class="section-tag" data-i18n="feat_tag">Core Gameplay Loop</span>
+            <h2 data-i18n="feat_heading">Survive the High-Stakes Extraction</h2>
+            <p data-i18n="feat_sub">Every descent into the dark lunar facilities demands tight coordination, risk assessment, and resource preservation.</p>
         </div>
 
         <div class="features-grid">
             <div class="feature-card">
                 <div class="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                 </div>
-                <h3>Biomass Harvest & Quotas</h3>
-                <p>Contractual deadlines won't wait. Extract vital alien biomass and ancient relics from deep complexes to meet ever-increasing syndicate quotas before your time expires.</p>
+                <h3 data-i18n="feat_title_1">Biomass Harvest & Syndicate Quotas</h3>
+                <p data-i18n="feat_desc_1">Earth was abandoned after a devastating war. Infiltrate mutant-infested complexes to harvest essential Biomass for The Ark while salvaging valuable artifacts to secure your own paycheck.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24M14.83 9.17l4.24-4.24M14.83 14.83l4.24 4.24M9.17 14.83l-4.24 4.24"/></svg>
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24M14.83 9.17l4.24-4.24M14.83 14.83l4.24 4.24M9.17 14.83l-4.24 4.24"/></svg>
                 </div>
-                <h3>Specimen Capture</h3>
-                <p>Dead enemies yield scrap, but live specimens pay fortune. Deploy containment traps, coordinate baiting tactics, and haul hostile entities back to the ship for massive rewards.</p>
+                <h3 data-i18n="feat_title_2">Live Specimen Containment</h3>
+                <p data-i18n="feat_desc_2">Eliminating enemies grants little, but capturing them alive pays a fortune. Coordinate specialized Net-Launchers, traps, and team flanking to bag dangerous specimens and bring them to extraction.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
                 </div>
-                <h3>Procedural Facilities</h3>
-                <p>No two drops are identical. Explore modular subterranean facilities with shifting room layouts, atmospheric hazards, security traps, and unpredictable spawn threats.</p>
+                <h3 data-i18n="feat_title_3">Proximity Voice Audio</h3>
+                <p data-i18n="feat_desc_3">Immerse yourself with realistic 3D directional voice chat. Whisper when predators are near, hear your friends' screams fade down dark corridors, and use walkie-talkies to stay connected.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
                 </div>
-                <h3>Minibot Protocol</h3>
-                <p>Death is not the end of the round. Fallen squadmates transition into agile scout Minibots, guiding survivors through dark corridors, spotting threats, and enabling clutch extractions.</p>
+                <h3 data-i18n="feat_title_4">Procedural Complex Generation</h3>
+                <p data-i18n="feat_desc_4">No two excursions are identical. Explore modular subterranean warehouses, bio-research facilities, and mansions with shifting routes, environmental traps, and evolving threat hazards.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <h3 data-i18n="feat_title_5">Minibot Recon Protocol</h3>
+                <p data-i18n="feat_desc_5">Death doesn't bench you. Fallen operatives boot up into agile scout Minibots, providing real-time camera reconnaissance, spotting monster paths, and guiding teammates safely to the airlock.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                </div>
+                <h3 data-i18n="feat_title_6">Shared Arsenal & Equipment</h3>
+                <p data-i18n="feat_desc_6">Pool hard-earned credits to purchase specialized gadgets, high-voltage tasers, sonar radars, thermal vision sensors, and jump-thruster upgrades before your drop.</p>
             </div>
         </div>
     </section>
 
-    <!-- GAMEPLAY BANNER & SPECS -->
-    <section class="game-banner">
+    <!-- HOSTILE SPECIMENS (BESTIARY) -->
+    <section class="bestiary-section" id="specimens">
+        <div class="section-header">
+            <span class="section-tag" data-i18n="spec_tag">Ark Intelligence Database</span>
+            <h2 data-i18n="spec_heading">Hostile Fauna & Entities</h2>
+            <p data-i18n="spec_sub">Study confirmed biological entities discovered across abandoned sector complexes. Learn their behavior to survive — and to capture them alive.</p>
+        </div>
+
+        <div class="bestiary-grid">
+            <!-- SPECIMEN 1 -->
+            <div class="specimen-card">
+                <div class="specimen-img-wrap">
+                    <span class="specimen-threat threat-extreme" data-i18n="threat_lethal">Lethal</span>
+                    <img src="assets/monsters/mimic.png" alt="Mimic Specimen" class="specimen-img">
+                </div>
+                <div class="specimen-info">
+                    <span class="specimen-code">SPECIMEN #01 • AMBUSH</span>
+                    <h3 class="specimen-name" data-i18n="spec_name_mimic">The Mimic</h3>
+                    <p class="specimen-desc" data-i18n="spec_desc_mimic">Camouflages perfectly as supply crates, lockers, or abandoned machinery. Springs violently when contractors attempt extraction.</p>
+                </div>
+            </div>
+
+            <!-- SPECIMEN 2 -->
+            <div class="specimen-card">
+                <div class="specimen-img-wrap">
+                    <span class="specimen-threat threat-high" data-i18n="threat_high">High Threat</span>
+                    <img src="assets/monsters/sonic_monster.png" alt="Sonic Monster Specimen" class="specimen-img">
+                </div>
+                <div class="specimen-info">
+                    <span class="specimen-code">SPECIMEN #02 • AUDITORY</span>
+                    <h3 class="specimen-name" data-i18n="spec_name_sonic">Sonic Stalker</h3>
+                    <p class="specimen-desc" data-i18n="spec_desc_sonic">Completely blind, but guided by hyper-sensitive acoustic sensors. Running, speaking, or dropping heavy loot alerts it instantly.</p>
+                </div>
+            </div>
+
+            <!-- SPECIMEN 3 -->
+            <div class="specimen-card">
+                <div class="specimen-img-wrap">
+                    <span class="specimen-threat threat-extreme" data-i18n="threat_lethal">Lethal</span>
+                    <img src="assets/monsters/laser_eye.png" alt="Laser Eye Specimen" class="specimen-img">
+                </div>
+                <div class="specimen-info">
+                    <span class="specimen-code">SPECIMEN #03 • SENTINEL</span>
+                    <h3 class="specimen-name" data-i18n="spec_name_lasereye">Laser Eye</h3>
+                    <p class="specimen-desc" data-i18n="spec_desc_lasereye">Hovers along main corridors scanning with high-energy ocular beams. Break line of sight immediately or suffer instantaneous thermal incineration.</p>
+                </div>
+            </div>
+
+            <!-- SPECIMEN 4 -->
+            <div class="specimen-card">
+                <div class="specimen-img-wrap">
+                    <span class="specimen-threat threat-high" data-i18n="threat_high">High Threat</span>
+                    <img src="assets/monsters/the_hand.png" alt="The Hand Specimen" class="specimen-img">
+                </div>
+                <div class="specimen-info">
+                    <span class="specimen-code">SPECIMEN #04 • PHYSICAL</span>
+                    <h3 class="specimen-name" data-i18n="spec_name_thehand">The Hand</h3>
+                    <p class="specimen-desc" data-i18n="spec_desc_thehand">A monstrous appendage crawling across ceilings and pipe ducts. Grabs isolated operatives and drags them into unreachable air vents.</p>
+                </div>
+            </div>
+
+            <!-- SPECIMEN 5 -->
+            <div class="specimen-card">
+                <div class="specimen-img-wrap">
+                    <span class="specimen-threat threat-medium" data-i18n="threat_medium">Medium</span>
+                    <img src="assets/monsters/nimbus.png" alt="Nimbus Specimen" class="specimen-img">
+                </div>
+                <div class="specimen-info">
+                    <span class="specimen-code">SPECIMEN #05 • ANOMALY</span>
+                    <h3 class="specimen-name" data-i18n="spec_name_nimbus">Nimbus Cloud</h3>
+                    <p class="specimen-desc" data-i18n="spec_desc_nimbus">An atmospheric gaseous anomaly that drifts through ventilation shafts, distorting radio frequencies and impairing operative breathing.</p>
+                </div>
+            </div>
+
+            <!-- SPECIMEN 6 -->
+            <div class="specimen-card">
+                <div class="specimen-img-wrap">
+                    <span class="specimen-threat threat-high" data-i18n="threat_high">High Threat</span>
+                    <img src="assets/monsters/spikroll.png" alt="Spikroll Specimen" class="specimen-img">
+                </div>
+                <div class="specimen-info">
+                    <span class="specimen-code">SPECIMEN #06 • KINETIC</span>
+                    <h3 class="specimen-name" data-i18n="spec_name_spikroll">Spikroll</h3>
+                    <p class="specimen-desc" data-i18n="spec_desc_spikroll">Armored chitin sphere capable of reaching high acceleration down long corridors, crushing barricades and careless squadmates.</p>
+                </div>
+            </div>
+
+            <!-- SPECIMEN 7 -->
+            <div class="specimen-card">
+                <div class="specimen-img-wrap">
+                    <span class="specimen-threat threat-extreme" data-i18n="threat_lethal">Lethal</span>
+                    <img src="assets/monsters/statue.png" alt="Statue Specimen" class="specimen-img">
+                </div>
+                <div class="specimen-info">
+                    <span class="specimen-code">SPECIMEN #07 • RELIC</span>
+                    <h3 class="specimen-name" data-i18n="spec_name_statue">Weeping Relic</h3>
+                    <p class="specimen-desc" data-i18n="spec_desc_statue">Remains inert while in direct line of sight. Closes distances with lightning speed when unobserved. Never turn your back.</p>
+                </div>
+            </div>
+
+            <!-- SPECIMEN 8 (CONTRACTOR) -->
+            <div class="specimen-card">
+                <div class="specimen-img-wrap">
+                    <span class="specimen-threat threat-special" data-i18n="threat_contractor">Operative</span>
+                    <img src="assets/monsters/player.png" alt="Contractor Suit" class="specimen-img">
+                </div>
+                <div class="specimen-info">
+                    <span class="specimen-code">PERSONNEL • EXPEDITION</span>
+                    <h3 class="specimen-name" data-i18n="spec_name_contractor">Ark Contractor</h3>
+                    <p class="specimen-desc" data-i18n="spec_desc_contractor">Equipped with standard pressurized EVA hazard suit, Net-Launcher rig, and oxygen filtration backpack. Easily disposable by management.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SCREENSHOTS GALLERY -->
+    <section class="gallery-section" id="gallery">
+        <div class="section-header">
+            <span class="section-tag" data-i18n="gallery_tag">In-Game Footage</span>
+            <h2 data-i18n="gallery_heading">Mission Dispatches & Visuals</h2>
+            <p data-i18n="gallery_sub">Actual gameplay snapshots captured inside Unreal Engine 5. Click any photo to examine the high-definition sector environment.</p>
+        </div>
+
+        <div class="gallery-grid">
+            <div class="gallery-item" data-full="assets/screenshots/screen1_world.png">
+                <img src="assets/screenshots/screen1_world.png" alt="Planetary Surface Dropzone">
+                <div class="gallery-overlay">
+                    <div class="gallery-title" data-i18n="gal_title_1">Planetary Surface Dropzone</div>
+                    <div class="gallery-sub">SECTOR 04 // EXTERIOR PERIMETER</div>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-full="assets/screenshots/screen2_interior.png">
+                <img src="assets/screenshots/screen2_interior.png" alt="Subterranean Corridors">
+                <div class="gallery-overlay">
+                    <div class="gallery-title" data-i18n="gal_title_2">Deep Industrial Complex</div>
+                    <div class="gallery-sub">SECTOR 02 // CARGO TUNNEL 4B</div>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-full="assets/screenshots/screen3_extraction.png">
+                <img src="assets/screenshots/screen3_extraction.png" alt="Contractor Extraction Chamber">
+                <div class="gallery-overlay">
+                    <div class="gallery-title" data-i18n="gal_title_3">Cargo Quarantine Airlock</div>
+                    <div class="gallery-sub">EXTRACTION BAY // BIOMASS VAULT</div>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-full="assets/screenshots/screen4_action.png">
+                <img src="assets/screenshots/screen4_action.png" alt="Co-op Specimen Capture">
+                <div class="gallery-overlay">
+                    <div class="gallery-title" data-i18n="gal_title_4">Live Creature Containment Phase</div>
+                    <div class="gallery-sub">NET-LAUNCHER DEPLOYMENT // LAB 08</div>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-full="assets/screenshots/screen5_coop.png">
+                <img src="assets/screenshots/screen5_coop.png" alt="Tactical Squad Comms">
+                <div class="gallery-overlay">
+                    <div class="gallery-title" data-i18n="gal_title_5">Squad Synchronization</div>
+                    <div class="gallery-sub">PROXIMITY AUDIO // DEEP SECTOR</div>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-full="assets/screenshots/screen6_atmosphere.png">
+                <img src="assets/screenshots/screen6_atmosphere.png" alt="Abandoned Quarantine Wing">
+                <div class="gallery-overlay">
+                    <div class="gallery-title" data-i18n="gal_title_6">Quarantine Containment Wing</div>
+                    <div class="gallery-sub">BIO-HAZARD DETECTED // ZERO LIGHT</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LIGHTBOX MODAL -->
+    <div class="modal" id="image-modal">
+        <button class="modal-close" id="modal-close">&times;</button>
+        <div class="modal-content">
+            <img src="" alt="Enlarged screenshot" id="modal-img">
+        </div>
+    </div>
+
+    <!-- GAME OVERVIEW BANNER & SPECS -->
+    <section class="game-banner" id="overview">
         <div class="banner-box">
+            <img src="assets/branding/capsule_vertical.png" alt="Project Exodus Poster" class="banner-poster">
             <div class="banner-content">
-                <span class="section-tag">Cooperative Survival</span>
-                <h3>Co-op Paced for High Tension</h3>
-                <p>Team up with up to 4 players online. Upgrade your suits, scanner equipment, navigation sensors, and ship systems in the preparation phase before descending into hostile lunar sectors.</p>
-                <a href="https://store.steampowered.com" target="_blank" rel="noopener noreferrer" class="btn-primary">
-                    <span>Follow on Steam</span>
+                <span class="section-tag" data-i18n="overview_tag">Game Dossier</span>
+                <h3 data-i18n="overview_heading">Built for High Tension & Unforgiving Survival</h3>
+                <p data-i18n="overview_desc">Project Exodus challenges you and up to 5 friends to descend into post-apocalyptic horrors where cooperation is mandatory and mistakes are fatal. Coordinate roles, trap monsters, collect strange artifacts, and purchase gear upgrades to meet your quota.</p>
+                
+                <ul class="specs-list">
+                    <li class="spec-item">
+                        <div class="spec-label" data-i18n="spec_lbl_plat">Platform</div>
+                        <div class="spec-value">PC Windows (Steam)</div>
+                    </li>
+                    <li class="spec-item">
+                        <div class="spec-label" data-i18n="spec_lbl_players">Players</div>
+                        <div class="spec-value" data-i18n="spec_val_players">1 - 6 Online Co-op</div>
+                    </li>
+                    <li class="spec-item">
+                        <div class="spec-label" data-i18n="spec_lbl_engine">Engine</div>
+                        <div class="spec-value">Unreal Engine 5</div>
+                    </li>
+                    <li class="spec-item">
+                        <div class="spec-label" data-i18n="spec_lbl_genre">Genre</div>
+                        <div class="spec-value" data-i18n="spec_val_genre">Co-op Extraction Horror</div>
+                    </li>
+                    <li class="spec-item">
+                        <div class="spec-label" data-i18n="spec_lbl_dev">Developer</div>
+                        <div class="spec-value">AstroxDevz</div>
+                    </li>
+                    <li class="spec-item">
+                        <div class="spec-label" data-i18n="spec_lbl_publisher">Publisher</div>
+                        <div class="spec-value">AstroxDevz</div>
+                    </li>
+                </ul>
+
+                <a href="https://store.steampowered.com/app/4149590/Project_Exodus/" target="_blank" rel="noopener noreferrer" class="btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.029 4.524 4.524s-2.03 4.524-4.524 4.524h-.105l-4.076 2.911c0 .052.005.105.005.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.707L.42 15.083C1.726 20.24 6.402 24 11.979 24c6.627 0 12-5.373 12-12s-5.373-12-12-12z"/></svg>
+                    <span data-i18n="btn_specs_steam">Wishlist Project Exodus on Steam</span>
                 </a>
             </div>
-            <ul class="specs-list">
-                <li class="spec-item">
-                    <div class="spec-label">Platform</div>
-                    <div class="spec-value">PC (Steam / Windows)</div>
-                </li>
-                <li class="spec-item">
-                    <div class="spec-label">Players</div>
-                    <div class="spec-value">1 - 4 Online Co-op</div>
-                </li>
-                <li class="spec-item">
-                    <div class="spec-label">Engine</div>
-                    <div class="spec-value">Unreal Engine 5</div>
-                </li>
-                <li class="spec-item">
-                    <div class="spec-label">Developer</div>
-                    <div class="spec-value">AstroxDevz</div>
-                </li>
-            </ul>
         </div>
     </section>
 
-    <!-- ABOUT STUDIO -->
+    <!-- ABOUT STUDIO SECTION -->
     <section class="about" id="about">
         <div class="about-card">
-            <h2>About AstroxDevz</h2>
-            <p>AstroxDevz is an independent game development studio dedicated to crafting immersive, mechanics-driven cooperative PC experiences. We believe in tight core gameplay loops, fair challenge, and zero predatory monetization.</p>
+            <span class="section-tag" data-i18n="studio_tag">Independent Game Studio</span>
+            <h2 data-i18n="studio_heading">About AstroxDevz</h2>
+            <p data-i18n="studio_desc">AstroxDevz is an independent game development studio founded by Astrox, dedicated to crafting immersive, atmospheric, mechanics-driven PC experiences in Unreal Engine 5. We design games where player agency, fair challenge, and genuine multiplayer tension take center stage.</p>
+            
+            <div class="about-socials">
+                <a href="https://store.steampowered.com/app/4149590/Project_Exodus/" target="_blank" rel="noopener noreferrer" class="social-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.029 4.524 4.524s-2.03 4.524-4.524 4.524h-.105l-4.076 2.911c0 .052.005.105.005.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.707L.42 15.083C1.726 20.24 6.402 24 11.979 24c6.627 0 12-5.373 12-12s-5.373-12-12-12z"/></svg>
+                    <span>Steam Store Page</span>
+                </a>
+                <a href="https://www.youtube.com/@AstroxDevz" target="_blank" rel="noopener noreferrer" class="social-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                    <span>YouTube (@AstroxDevz)</span>
+                </a>
+            </div>
+
             <div class="contact-box">
-                <span>Inquiries & Press:</span>
+                <span data-i18n="studio_contact_label">Press & Business Inquiries:</span>
                 <a href="mailto:dev.astrox@gmail.com">dev.astrox@gmail.com</a>
             </div>
         </div>
@@ -649,22 +1451,304 @@
         <div class="footer-container">
             <div class="footer-brand">
                 <a href="#" class="logo">
-                    <div class="logo-symbol">A</div>
+                    <img src="assets/branding/favicon.png" alt="AstroxDevz Logo" class="logo-img">
                     <span>AstroxDevz</span>
                 </a>
-                <p>Creators of Project Exodus • Independent PC Game Studio</p>
+                <p data-i18n="footer_sub">Creators of Project Exodus • Independent PC Game Studio</p>
             </div>
             <ul class="footer-links">
-                <li><a href="#game">Home</a></li>
-                <li><a href="legal.html#privacy">Privacy Policy</a></li>
-                <li><a href="legal.html#eula">EULA Agreement</a></li>
-                <li><a href="mailto:dev.astrox@gmail.com">Contact</a></li>
+                <li><a href="#game" data-i18n="nav_game">Project Exodus</a></li>
+                <li><a href="#trailer" data-i18n="nav_trailer">Trailer</a></li>
+                <li><a href="#specimens" data-i18n="nav_specimens">Specimens</a></li>
+                <li><a href="#gallery" data-i18n="nav_gallery">Screenshots</a></li>
+                <li><a href="legal.html#privacy" data-i18n="nav_privacy">Privacy Policy</a></li>
+                <li><a href="legal.html#eula" data-i18n="nav_eula">EULA</a></li>
+                <li><a href="mailto:dev.astrox@gmail.com" data-i18n="footer_contact">Contact</a></li>
             </ul>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 AstroxDevz. All rights reserved. Valve, Steam, and the Steam logo are trademarks and/or registered trademarks of Valve Corporation.</p>
+            <p>&copy; 2026 AstroxDevz. <span data-i18n="footer_rights">All rights reserved. Project Exodus is a project developed by AstroxDevz. Valve, Steam, and the Steam logo are trademarks and/or registered trademarks of Valve Corporation.</span></p>
         </div>
     </footer>
 
+    <!-- SCRIPT FOR BILINGUAL SUPPORT & INTERACTIONS -->
+    <script>
+        const i18nData = {
+            en: {
+                nav_game: "Project Exodus",
+                nav_trailer: "Trailer",
+                nav_features: "Features",
+                nav_specimens: "Specimens",
+                nav_gallery: "Screenshots",
+                nav_studio: "Studio",
+                nav_privacy: "Privacy",
+                nav_eula: "EULA",
+                btn_steam_wishlist: "Wishlist on Steam",
+                hero_badge: "NOW IN ACTIVE DEVELOPMENT • POWERED BY UNREAL ENGINE 5",
+                hero_tagline: "A tense cooperative extraction survival thriller. Infiltrate abandoned planetary complexes, extract volatile Biomass, capture hostile specimens alive, and survive the syndicate quota.",
+                btn_hero_steam: "Wishlist on Steam",
+                btn_hero_trailer: "Watch Trailer",
+                btn_hero_specimens: "Specimen Archive",
+                pill_coop: "1 - 6 Players Online Co-op",
+                pill_voice: "Proximity Voice Chat",
+                pill_procedural: "Procedural Complex Generation",
+                trailer_tag: "Official Media",
+                trailer_heading: "Watch the Official Trailer",
+                trailer_sub: "Watch first-hand footage of tense cooperative expeditions, alive specimen captures, and the harrowing horrors that stalk the deep sector.",
+                tab_gameplay_trailer: "Gameplay Trailer",
+                tab_cinematic_trailer: "Cinematic Trailer",
+                link_yt_channel: "YouTube Channel",
+                link_steam_hub: "Steam Hub",
+                feat_tag: "Core Gameplay Loop",
+                feat_heading: "Survive the High-Stakes Extraction",
+                feat_sub: "Every descent into the dark lunar facilities demands tight coordination, risk assessment, and resource preservation.",
+                feat_title_1: "Biomass Harvest & Syndicate Quotas",
+                feat_desc_1: "Earth was abandoned after a devastating war. Infiltrate mutant-infested complexes to harvest essential Biomass for The Ark while salvaging valuable artifacts to secure your own paycheck.",
+                feat_title_2: "Live Specimen Containment",
+                feat_desc_2: "Eliminating enemies grants little, but capturing them alive pays a fortune. Coordinate specialized Net-Launchers, traps, and team flanking to bag dangerous specimens and bring them to extraction.",
+                feat_title_3: "Proximity Voice Audio",
+                feat_desc_3: "Immerse yourself with realistic 3D directional voice chat. Whisper when predators are near, hear your friends' screams fade down dark corridors, and use walkie-talkies to stay connected.",
+                feat_title_4: "Procedural Complex Generation",
+                feat_desc_4: "No two excursions are identical. Explore modular subterranean warehouses, bio-research facilities, and mansions with shifting routes, environmental traps, and evolving threat hazards.",
+                feat_title_5: "Minibot Recon Protocol",
+                feat_desc_5: "Death doesn't bench you. Fallen operatives boot up into agile scout Minibots, providing real-time camera reconnaissance, spotting monster paths, and guiding teammates safely to the airlock.",
+                feat_title_6: "Shared Arsenal & Equipment",
+                feat_desc_6: "Pool hard-earned credits to purchase specialized gadgets, high-voltage tasers, sonar radars, thermal vision sensors, and jump-thruster upgrades before your drop.",
+                spec_tag: "Ark Intelligence Database",
+                spec_heading: "Hostile Fauna & Entities",
+                spec_sub: "Study confirmed biological entities discovered across abandoned sector complexes. Learn their behavior to survive — and to capture them alive.",
+                threat_lethal: "Lethal",
+                threat_high: "High Threat",
+                threat_medium: "Medium",
+                threat_contractor: "Operative",
+                spec_name_mimic: "The Mimic",
+                spec_desc_mimic: "Camouflages perfectly as supply crates, lockers, or abandoned machinery. Springs violently when contractors attempt extraction.",
+                spec_name_sonic: "Sonic Stalker",
+                spec_desc_sonic: "Completely blind, but guided by hyper-sensitive acoustic sensors. Running, speaking, or dropping heavy loot alerts it instantly.",
+                spec_name_lasereye: "Laser Eye",
+                spec_desc_lasereye: "Hovers along main corridors scanning with high-energy ocular beams. Break line of sight immediately or suffer instantaneous thermal incineration.",
+                spec_name_thehand: "The Hand",
+                spec_desc_thehand: "A monstrous appendage crawling across ceilings and pipe ducts. Grabs isolated operatives and drags them into unreachable air vents.",
+                spec_name_nimbus: "Nimbus Cloud",
+                spec_desc_nimbus: "An atmospheric gaseous anomaly that drifts through ventilation shafts, distorting radio frequencies and impairing operative breathing.",
+                spec_name_spikroll: "Spikroll",
+                spec_desc_spikroll: "Armored chitin sphere capable of reaching high acceleration down long corridors, crushing barricades and careless squadmates.",
+                spec_name_statue: "Weeping Relic",
+                spec_desc_statue: "Remains inert while in direct line of sight. Closes distances with lightning speed when unobserved. Never turn your back.",
+                spec_name_contractor: "Ark Contractor",
+                spec_desc_contractor: "Equipped with standard pressurized EVA hazard suit, Net-Launcher rig, and oxygen filtration backpack. Easily disposable by management.",
+                gallery_tag: "In-Game Footage",
+                gallery_heading: "Mission Dispatches & Visuals",
+                gallery_sub: "Actual gameplay snapshots captured inside Unreal Engine 5. Click any photo to examine the high-definition sector environment.",
+                gal_title_1: "Planetary Surface Dropzone",
+                gal_title_2: "Deep Industrial Complex",
+                gal_title_3: "Cargo Quarantine Airlock",
+                gal_title_4: "Live Creature Containment Phase",
+                gal_title_5: "Squad Synchronization",
+                gal_title_6: "Quarantine Containment Wing",
+                overview_tag: "Game Dossier",
+                overview_heading: "Built for High Tension & Unforgiving Survival",
+                overview_desc: "Project Exodus challenges you and up to 5 friends to descend into post-apocalyptic horrors where cooperation is mandatory and mistakes are fatal. Coordinate roles, trap monsters, collect strange artifacts, and purchase gear upgrades to meet your quota.",
+                spec_lbl_plat: "Platform",
+                spec_lbl_players: "Players",
+                spec_val_players: "1 - 6 Online Co-op",
+                spec_lbl_engine: "Engine",
+                spec_lbl_genre: "Genre",
+                spec_val_genre: "Co-op Extraction Horror",
+                spec_lbl_dev: "Developer",
+                spec_lbl_publisher: "Publisher",
+                btn_specs_steam: "Wishlist Project Exodus on Steam",
+                studio_tag: "Independent Game Studio",
+                studio_heading: "About AstroxDevz",
+                studio_desc: "AstroxDevz is an independent game development studio founded by Astrox, dedicated to crafting immersive, atmospheric, mechanics-driven PC experiences in Unreal Engine 5. We design games where player agency, fair challenge, and genuine multiplayer tension take center stage.",
+                studio_contact_label: "Press & Business Inquiries:",
+                footer_sub: "Creators of Project Exodus • Independent PC Game Studio",
+                footer_contact: "Contact",
+                footer_rights: "All rights reserved. Project Exodus is a project developed by AstroxDevz. Valve, Steam, and the Steam logo are trademarks and/or registered trademarks of Valve Corporation."
+            },
+            es: {
+                nav_game: "Project Exodus",
+                nav_trailer: "Tráiler",
+                nav_features: "Jugabilidad",
+                nav_specimens: "Especímenes",
+                nav_gallery: "Capturas",
+                nav_studio: "Estudio",
+                nav_privacy: "Privacidad",
+                nav_eula: "EULA",
+                btn_steam_wishlist: "Añadir a Deseados",
+                hero_badge: "EN DESARROLLO ACTIVO • POTENCIADO POR UNREAL ENGINE 5",
+                hero_tagline: "Un tenso thriller cooperativo de extracción y supervivencia. Infiltra complejos planetarios abandonados, extrae biomasa volátil, captura especímenes hostiles con vida y sobrevive a la cuota del sindicato.",
+                btn_hero_steam: "Añadir a Deseados en Steam",
+                btn_hero_trailer: "Ver Tráiler",
+                btn_hero_specimens: "Archivo de Especímenes",
+                pill_coop: "1 - 6 Jugadores Co-op Online",
+                pill_voice: "Chat de Voz por Proximidad",
+                pill_procedural: "Generación Procedural de Complejos",
+                trailer_tag: "Multimedia Oficial",
+                trailer_heading: "Tráiler Oficial del Juego",
+                trailer_sub: "Descubre en primera persona las tensas expediciones cooperativas, la captura de criaturas alienígenas con vida y los terrores que acechan en las profundidades.",
+                tab_gameplay_trailer: "Tráiler de Jugabilidad",
+                tab_cinematic_trailer: "Tráiler Cinemático",
+                link_yt_channel: "Canal de YouTube",
+                link_steam_hub: "Página de Steam",
+                feat_tag: "Bucle de Jugabilidad",
+                feat_heading: "Sobrevive a la Extracción de Alto Riesgo",
+                feat_sub: "Cada incursión en las instalaciones oscuras requiere una coordinación milimétrica, control del pánico y gestión rigurosa de suministros.",
+                feat_title_1: "Cosecha de Biomasa y Cuotas",
+                feat_desc_1: "La Tierra quedó devastada tras una brutal guerra. Infiltra complejos infestados para extraer la biomasa vital que 'El Arca' necesita, mientras vendes extraños artefactos para cobrar tu sueldo.",
+                feat_title_2: "Captura de Criaturas con Vida",
+                feat_desc_2: "Matar a las criaturas apenas da beneficios; capturarlas vivas paga fortunas. Coordina lanza-redes especializados, cebos y emboscadas para enjaular entidades hostiles y llevarlas al transporte.",
+                feat_title_3: "Chat de Voz Espacial y Posicional",
+                feat_desc_3: "Comunícate mediante audio direccional en tiempo real. Susurra si un depredador ronda cerca, escucha los gritos lejanos de tus compañeros y utiliza walkie-talkies para no quedar aislado.",
+                feat_title_4: "Complejos y Pasillos Procedurales",
+                feat_desc_4: "Ninguna partida es idéntica. Explora almacenes subterráneos, laboratorios biológicos y mansiones con distribución modular cambiante, trampas ambientales y amenazas dinámicas.",
+                feat_title_5: "Protocolo de Dron Minibot",
+                feat_desc_5: "Morir no es el final de la ronda. Los operativos caídos toman el control de ágiles drones Minibots para explorar esquinas, advertir peligros y guiar a los supervivientes hasta la esclusa.",
+                feat_title_6: "Arsenal y Equipo Compartido",
+                feat_desc_6: "Reúne créditos en equipo para adquirir linternas avanzadas, radares sónicos, sensores térmicos, aturdidores y propulsores antes de descender al siguiente nivel de peligro.",
+                spec_tag: "Base de Datos del Arca",
+                spec_heading: "Fauna Hostil y Entidades",
+                spec_sub: "Estudia las anomalías biológicas documentadas en los complejos abandonados. Conoce sus patrones de caza para sobrevivir y poder atraparlas vivas.",
+                threat_lethal: "Letal",
+                threat_high: "Peligro Alto",
+                threat_medium: "Peligro Medio",
+                threat_contractor: "Operativo",
+                spec_name_mimic: "El Mímico",
+                spec_desc_mimic: "Se camufla a la perfección imitando contenedores de suministros, taquillas o maquinaria. Ataca de improvisto cuando los contratistas intentan abrirlos.",
+                spec_name_sonic: "Merodeador Sónico",
+                spec_desc_sonic: "Completamente ciego, pero dotado de una audición hiperdesarrollada. Correr, hablar en voz alta o soltar chatarra alertará de inmediato su veloz embestida.",
+                spec_name_lasereye: "Ojo Centinela",
+                spec_desc_lasereye: "Patrulla flotando por los corredores principales proyectando un haz ocular mortal. Rompe la línea de visión al instante o serás incinerado en segundos.",
+                spec_name_thehand: "La Mano",
+                spec_desc_thehand: "Una colosal extremidad biomecánica que repta por techos y tuberías. Atrapa a los operativos rezagados y los arrastra hacia los conductos de ventilación.",
+                spec_name_nimbus: "Nube Nimbus",
+                spec_desc_nimbus: "Entidad anómala de vapor condensado que recorre las chimeneas de ventilación, interfiriendo las transmisiones de radio y asfixiando a quienes la atraviesan.",
+                spec_name_spikroll: "Spikroll Blindado",
+                spec_desc_spikroll: "Masa esférica acorazada con espinas retráctiles que acelera a gran velocidad por pasillos rectos, arrasando barricadas y aplastando todo a su paso.",
+                spec_name_statue: "Reliquia Llorona",
+                spec_desc_statue: "Permanece completamente inmóvil mientras alguien mantenga contacto visual directo. Se desplaza a velocidad de vértigo cuando no se la mira. Nunca le des la espalda.",
+                spec_name_contractor: "Operativo del Arca",
+                spec_desc_contractor: "Equipado con traje presurizado para entornos tóxicos, arnés de lanza-redes y filtrado de oxígeno. Totalmente prescindible para los mandos de la misión.",
+                gallery_tag: "Imágenes Reales del Juego",
+                gallery_heading: "Despachos y Capturas de Misión",
+                gallery_sub: "Fotografías reales in-game tomadas directamente en Unreal Engine 5. Haz clic en cualquier imagen para verla en alta resolución.",
+                gal_title_1: "Zona de Aterrizaje en Superficie",
+                gal_title_2: "Complejo Industrial Subterráneo",
+                gal_title_3: "Esclusa de Cuarentena y Carga",
+                gal_title_4: "Captura de Espécimen con Lanza-Redes",
+                gal_title_5: "Coordinación Táctica de Escuadrón",
+                gal_title_6: "Ala de Cuarentena y Contención",
+                overview_tag: "Ficha del Juego",
+                overview_heading: "Diseñado para la Tensión Extrema y el Cooperativo",
+                overview_desc: "Project Exodus te reta a ti y hasta a 5 amigos a descender en una pesadilla postapocalíptica donde el trabajo en equipo es obligatorio y los errores se pagan caros. Coordina roles, atrapa monstruos, reúne extraños artefactos y compra mejoras para cumplir la cuota del sindicato.",
+                spec_lbl_plat: "Plataforma",
+                spec_lbl_players: "Jugadores",
+                spec_val_players: "1 - 6 Co-op Online",
+                spec_lbl_engine: "Motor Gráfico",
+                spec_lbl_genre: "Género",
+                spec_val_genre: "Horror de Extracción Co-op",
+                spec_lbl_dev: "Desarrollador",
+                spec_lbl_publisher: "Editor",
+                btn_specs_steam: "Añadir Project Exodus a Deseados en Steam",
+                studio_tag: "Estudio de Videojuegos Independiente",
+                studio_heading: "Sobre AstroxDevz",
+                studio_desc: "AstroxDevz es un estudio de desarrollo de videojuegos independiente fundado por Astrox, enfocado en crear experiencias inmersivas, atmosféricas y mecánicamente profundas para PC en Unreal Engine 5. Apostamos por la toma de decisiones, el desafío justo y la tensión multijugador real.",
+                studio_contact_label: "Prensa y Contacto Profesional:",
+                footer_sub: "Creadores de Project Exodus • Estudio Indie de Videojuegos de PC",
+                footer_contact: "Contacto",
+                footer_rights: "Todos los derechos reservados. Project Exodus es un proyecto desarrollado por AstroxDevz. Valve, Steam y el logotipo de Steam son marcas comerciales y/o marcas registradas de Valve Corporation."
+            }
+        };
+
+        // LANGUAGE SYSTEM
+        function setLanguage(lang) {
+            const data = i18nData[lang] || i18nData.en;
+            
+            // Update all elements with data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (data[key]) {
+                    el.textContent = data[key];
+                }
+            });
+
+            // Update html lang attribute
+            document.documentElement.lang = lang;
+
+            // Update active state on buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Persist preference
+            localStorage.setItem('preferred_lang', lang);
+        }
+
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                setLanguage(btn.dataset.lang);
+            });
+        });
+
+        // TRAILER TAB SWITCHING
+        const trailerIframe = document.getElementById('main-trailer-iframe');
+        const trailerTabs = document.querySelectorAll('.trailer-tab-btn');
+
+        trailerTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                trailerTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const vidId = tab.dataset.vid;
+                trailerIframe.src = `https://www.youtube-nocookie.com/embed/${vidId}?rel=0&autoplay=1`;
+            });
+        });
+
+        // SCREENSHOTS LIGHTBOX MODAL
+        const modal = document.getElementById('image-modal');
+        const modalImg = document.getElementById('modal-img');
+        const modalClose = document.getElementById('modal-close');
+
+        document.querySelectorAll('.gallery-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const fullSrc = item.dataset.full;
+                modalImg.src = fullSrc;
+                modal.classList.add('active');
+            });
+        });
+
+        modalClose.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                modal.classList.remove('active');
+            }
+        });
+
+        // INITIAL LOAD INITIALIZATION
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const langParam = urlParams.get('lang');
+            const savedLang = localStorage.getItem('preferred_lang');
+            const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+
+            if (langParam === 'es' || (!langParam && savedLang === 'es') || (!langParam && !savedLang && browserLang.startsWith('es'))) {
+                setLanguage('es');
+            } else {
+                setLanguage('en');
+            }
+        });
+    </script>
 </body>
 </html>
