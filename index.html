@@ -7,6 +7,10 @@
     <meta name="description" content="Official website of AstroxDevz and Project Exodus — a tense sci-fi cooperative extraction survival horror game powered by Unreal Engine 5.">
     <link rel="icon" type="image/png" href="assets/branding/favicon.png">
 
+    <!-- Preload Critical Above-The-Fold Assets -->
+    <link rel="preload" as="image" href="assets/branding/hero.jpg">
+    <link rel="preload" as="image" href="assets/branding/logo.png">
+
     <!-- Open Graph / Meta -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://astroxdevz.com/">
@@ -14,10 +18,10 @@
     <meta property="og:description" content="Co-op extraction horror. Hunt mutated specimens, harvest volatile Biomass, and survive the quota.">
     <meta property="og:image" content="https://astroxdevz.com/assets/branding/capsule_main.png">
 
-    <!-- Fonts: Industrial Tactical Display (Rajdhani) + Monospace (JetBrains Mono) + Body (Inter) -->
+    <!-- Fonts: In-Game Orbitron + Tactical Rajdhani + JetBrains Mono + Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -43,7 +47,9 @@
             --border-tactical: rgba(200, 219, 54, 0.25);
             --border-cyan: rgba(0, 240, 255, 0.3);
 
-            --font-display: 'Rajdhani', -apple-system, sans-serif;
+            --font-orbitron: 'Orbitron', -apple-system, sans-serif;
+            --font-display: 'Orbitron', 'Rajdhani', -apple-system, sans-serif;
+            --font-tech: 'Rajdhani', -apple-system, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
             --font-body: 'Inter', -apple-system, sans-serif;
         }
@@ -114,8 +120,8 @@
             gap: 0.75rem;
             text-decoration: none;
             color: #fff;
-            font-family: var(--font-display);
-            font-size: 1.45rem;
+            font-family: var(--font-orbitron);
+            font-size: 1.25rem;
             font-weight: 800;
             letter-spacing: 0.06em;
             text-transform: uppercase;
@@ -140,8 +146,8 @@
         .nav-links a {
             color: var(--text-secondary);
             text-decoration: none;
-            font-family: var(--font-display);
-            font-size: 1.05rem;
+            font-family: var(--font-tech);
+            font-size: 1.1rem;
             font-weight: 600;
             letter-spacing: 0.05em;
             text-transform: uppercase;
@@ -215,10 +221,10 @@
             text-decoration: none;
             padding: 0.55rem 1.15rem;
             border-radius: 4px;
-            font-family: var(--font-display);
-            font-size: 1.05rem;
+            font-family: var(--font-orbitron);
+            font-size: 0.88rem;
             font-weight: 700;
-            letter-spacing: 0.04em;
+            letter-spacing: 0.05em;
             text-transform: uppercase;
             display: inline-flex;
             align-items: center;
@@ -258,7 +264,7 @@
             background-image: 
                 radial-gradient(ellipse at center, rgba(6, 7, 10, 0.4) 0%, rgba(6, 7, 10, 0.95) 75%),
                 linear-gradient(180deg, transparent 40%, var(--bg-deep) 100%),
-                url('assets/branding/hero.png');
+                url('assets/branding/hero.jpg');
             background-size: cover;
             background-position: center top;
             opacity: 0.65;
@@ -273,11 +279,11 @@
             gap: 0.6rem;
             background: rgba(14, 19, 29, 0.85);
             border: 1px solid var(--border-tactical);
-            padding: 0.35rem 1.1rem;
+            padding: 0.4rem 1.2rem;
             border-radius: 4px;
             color: var(--accent-biomass);
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
+            font-family: var(--font-orbitron);
+            font-size: 0.78rem;
             font-weight: 700;
             letter-spacing: 0.08em;
             text-transform: uppercase;
@@ -356,12 +362,12 @@
         .btn-primary {
             background: linear-gradient(135deg, #c8db36, #9ca443);
             color: #07090b;
-            font-family: var(--font-display);
+            font-family: var(--font-orbitron);
             font-weight: 800;
-            font-size: 1.2rem;
-            letter-spacing: 0.05em;
+            font-size: 1.05rem;
+            letter-spacing: 0.06em;
             text-transform: uppercase;
-            padding: 0.85rem 2.2rem;
+            padding: 0.95rem 2.2rem;
             border-radius: 4px;
             text-decoration: none;
             transition: all 0.25s ease;
@@ -384,12 +390,12 @@
             background: rgba(14, 19, 29, 0.9);
             border: 1px solid var(--border-cyan);
             color: #fff;
-            font-family: var(--font-display);
+            font-family: var(--font-orbitron);
             font-weight: 700;
-            font-size: 1.15rem;
+            font-size: 1rem;
             letter-spacing: 0.05em;
             text-transform: uppercase;
-            padding: 0.85rem 2rem;
+            padding: 0.95rem 2rem;
             border-radius: 4px;
             text-decoration: none;
             transition: all 0.2s ease;
@@ -422,11 +428,12 @@
             border-left: 3px solid var(--accent-cyan);
             padding: 0.5rem 1.1rem;
             border-radius: 2px;
-            font-family: var(--font-mono);
-            font-size: 0.82rem;
+            font-family: var(--font-tech);
+            font-size: 1rem;
+            font-weight: 600;
             color: var(--text-secondary);
             text-transform: uppercase;
-            letter-spacing: 0.04em;
+            letter-spacing: 0.05em;
         }
 
         .pill-item svg {
@@ -443,23 +450,23 @@
 
         .section-tag {
             color: var(--accent-biomass);
-            font-family: var(--font-mono);
-            font-size: 0.82rem;
+            font-family: var(--font-orbitron);
+            font-size: 0.8rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.15em;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.6rem;
             display: block;
         }
 
         .section-header h2 {
-            font-family: var(--font-display);
-            font-size: 2.75rem;
+            font-family: var(--font-orbitron);
+            font-size: 2.35rem;
             font-weight: 800;
-            letter-spacing: 0.04em;
+            letter-spacing: 0.05em;
             text-transform: uppercase;
             color: #fff;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.85rem;
         }
 
         .section-header p {
@@ -484,7 +491,6 @@
             position: relative;
         }
 
-        /* Tactical Corner L-Brackets */
         .trailer-wrapper::before {
             content: '';
             position: absolute;
@@ -527,12 +533,12 @@
             background: transparent;
             border: none;
             color: var(--text-secondary);
-            font-family: var(--font-display);
-            font-size: 1.05rem;
+            font-family: var(--font-orbitron);
+            font-size: 0.88rem;
             font-weight: 700;
             letter-spacing: 0.05em;
             text-transform: uppercase;
-            padding: 0.5rem 1.25rem;
+            padding: 0.55rem 1.25rem;
             border-radius: 2px;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -553,9 +559,10 @@
         .trailer-link {
             color: var(--text-secondary);
             text-decoration: none;
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
+            font-family: var(--font-tech);
+            font-size: 0.95rem;
             font-weight: 600;
+            letter-spacing: 0.04em;
             display: inline-flex;
             align-items: center;
             gap: 0.45rem;
@@ -648,10 +655,10 @@
         }
 
         .feature-card h3 {
-            font-family: var(--font-display);
-            font-size: 1.5rem;
+            font-family: var(--font-orbitron);
+            font-size: 1.25rem;
             font-weight: 700;
-            letter-spacing: 0.03em;
+            letter-spacing: 0.04em;
             text-transform: uppercase;
             color: #fff;
             margin-bottom: 0.75rem;
@@ -805,10 +812,10 @@
         }
 
         .banner-content h3 {
-            font-family: var(--font-display);
-            font-size: 2.3rem;
+            font-family: var(--font-orbitron);
+            font-size: 1.95rem;
             font-weight: 800;
-            letter-spacing: 0.03em;
+            letter-spacing: 0.04em;
             text-transform: uppercase;
             color: #fff;
             margin-bottom: 1rem;
@@ -847,12 +854,12 @@
         }
 
         .spec-value {
-            font-family: var(--font-display);
-            font-size: 1.15rem;
+            font-family: var(--font-orbitron);
+            font-size: 1rem;
             color: #fff;
             font-weight: 700;
             letter-spacing: 0.02em;
-            margin-top: 0.2rem;
+            margin-top: 0.3rem;
         }
 
         /* ABOUT STUDIO SECTION */
@@ -896,10 +903,10 @@
         }
 
         .about-card h2 {
-            font-family: var(--font-display);
-            font-size: 2.4rem;
+            font-family: var(--font-orbitron);
+            font-size: 2.1rem;
             font-weight: 800;
-            letter-spacing: 0.04em;
+            letter-spacing: 0.05em;
             text-transform: uppercase;
             color: #fff;
             margin-bottom: 1.2rem;
@@ -932,10 +939,10 @@
             border-radius: 4px;
             color: #fff;
             text-decoration: none;
-            font-family: var(--font-display);
+            font-family: var(--font-orbitron);
             font-weight: 700;
-            font-size: 1.05rem;
-            letter-spacing: 0.04em;
+            font-size: 0.88rem;
+            letter-spacing: 0.05em;
             text-transform: uppercase;
             transition: all 0.2s ease;
         }
@@ -1001,8 +1008,8 @@
         .footer-links a {
             color: var(--text-secondary);
             text-decoration: none;
-            font-family: var(--font-display);
-            font-size: 1rem;
+            font-family: var(--font-tech);
+            font-size: 1.05rem;
             font-weight: 600;
             letter-spacing: 0.05em;
             text-transform: uppercase;
@@ -1050,7 +1057,7 @@
                 font-size: 0.72rem;
             }
             .section-header h2 {
-                font-size: 2rem;
+                font-size: 1.85rem;
             }
             .gallery-grid {
                 grid-template-columns: 1fr;
@@ -1064,13 +1071,13 @@
     <header>
         <div class="nav-container">
             <a href="#" class="logo">
-                <img src="assets/branding/profile.jpg" alt="AstroxDevz Logo" class="logo-img">
+                <img src="assets/branding/profile.jpg" alt="AstroxDevz Logo" class="logo-img" width="34" height="34">
                 <span>AstroxDevz</span>
             </a>
             <ul class="nav-links">
                 <li><a href="#game" data-i18n="nav_game">Project Exodus</a></li>
                 <li><a href="#trailer" data-i18n="nav_trailer">Trailer</a></li>
-                <li><a href="#features" data-i18n="nav_features">Features</a></li>
+                <li><a href="#features" data-i18n="nav_features">Directives</a></li>
                 <li><a href="#gallery" data-i18n="nav_gallery">Screenshots</a></li>
                 <li><a href="#about" data-i18n="nav_studio">Studio</a></li>
                 <li><a href="legal.html#privacy" data-i18n="nav_privacy">Privacy</a></li>
@@ -1099,7 +1106,7 @@
             <span data-i18n="hero_badge">[ STATUS: IN ACTIVE DEVELOPMENT ] // UNREAL ENGINE 5</span>
         </div>
         <div class="hero-logo-wrap">
-            <img src="assets/branding/logo.png" alt="Project Exodus Title" class="hero-logo-img">
+            <img src="assets/branding/logo.png" alt="Project Exodus Title" class="hero-logo-img" width="650" height="150">
         </div>
         <p data-i18n="hero_tagline">A tense cooperative extraction survival thriller. Infiltrate abandoned planetary complexes, extract volatile Biomass, capture hostile specimens alive, and survive the syndicate quota.</p>
         <div class="hero-actions">
@@ -1215,28 +1222,28 @@
         </div>
 
         <div class="gallery-grid">
-            <div class="gallery-item" data-full="assets/screenshots/screen1_world.png">
-                <img src="assets/screenshots/screen1_world.png" alt="Project Exodus In-Game Screenshot">
+            <div class="gallery-item" data-full="assets/screenshots/screen1_world.jpg">
+                <img src="assets/screenshots/screen1_world.jpg" alt="Project Exodus In-Game Screenshot" loading="lazy" decoding="async" width="600" height="338">
             </div>
 
-            <div class="gallery-item" data-full="assets/screenshots/screen2_interior.png">
-                <img src="assets/screenshots/screen2_interior.png" alt="Project Exodus In-Game Screenshot">
+            <div class="gallery-item" data-full="assets/screenshots/screen2_interior.jpg">
+                <img src="assets/screenshots/screen2_interior.jpg" alt="Project Exodus In-Game Screenshot" loading="lazy" decoding="async" width="600" height="338">
             </div>
 
-            <div class="gallery-item" data-full="assets/screenshots/screen3_extraction.png">
-                <img src="assets/screenshots/screen3_extraction.png" alt="Project Exodus In-Game Screenshot">
+            <div class="gallery-item" data-full="assets/screenshots/screen3_extraction.jpg">
+                <img src="assets/screenshots/screen3_extraction.jpg" alt="Project Exodus In-Game Screenshot" loading="lazy" decoding="async" width="600" height="338">
             </div>
 
-            <div class="gallery-item" data-full="assets/screenshots/screen4_action.png">
-                <img src="assets/screenshots/screen4_action.png" alt="Project Exodus In-Game Screenshot">
+            <div class="gallery-item" data-full="assets/screenshots/screen4_action.jpg">
+                <img src="assets/screenshots/screen4_action.jpg" alt="Project Exodus In-Game Screenshot" loading="lazy" decoding="async" width="600" height="338">
             </div>
 
-            <div class="gallery-item" data-full="assets/screenshots/screen5_coop.png">
-                <img src="assets/screenshots/screen5_coop.png" alt="Project Exodus In-Game Screenshot">
+            <div class="gallery-item" data-full="assets/screenshots/screen5_coop.jpg">
+                <img src="assets/screenshots/screen5_coop.jpg" alt="Project Exodus In-Game Screenshot" loading="lazy" decoding="async" width="600" height="338">
             </div>
 
-            <div class="gallery-item" data-full="assets/screenshots/screen6_atmosphere.png">
-                <img src="assets/screenshots/screen6_atmosphere.png" alt="Project Exodus In-Game Screenshot">
+            <div class="gallery-item" data-full="assets/screenshots/screen6_atmosphere.jpg">
+                <img src="assets/screenshots/screen6_atmosphere.jpg" alt="Project Exodus In-Game Screenshot" loading="lazy" decoding="async" width="600" height="338">
             </div>
         </div>
     </section>
@@ -1252,7 +1259,7 @@
     <!-- GAME OVERVIEW / MANIFEST -->
     <section class="game-banner" id="overview">
         <div class="banner-box">
-            <img src="assets/branding/capsule_vertical.png" alt="Project Exodus Poster" class="banner-poster">
+            <img src="assets/branding/capsule_vertical.jpg" alt="Project Exodus Poster" class="banner-poster" loading="lazy" decoding="async" width="320" height="480">
             <div class="banner-content">
                 <span class="section-tag" data-i18n="overview_tag">[ SECTOR MANIFEST // FICHA ]</span>
                 <h3 data-i18n="overview_heading">High Tension Cooperative Survival</h3>
@@ -1297,7 +1304,7 @@
     <section class="about" id="about">
         <div class="about-card">
             <div class="about-avatar-wrap">
-                <img src="assets/branding/profile.jpg" alt="AstroxDevz Avatar" class="about-avatar">
+                <img src="assets/branding/profile.jpg" alt="AstroxDevz Avatar" class="about-avatar" width="120" height="120" loading="lazy" decoding="async">
             </div>
             <span class="section-tag" data-i18n="studio_tag">[ INDIE DEV TRANSMISSION // COMUNICADO ]</span>
             <h2 data-i18n="studio_heading">About AstroxDevz</h2>
@@ -1326,7 +1333,7 @@
         <div class="footer-container">
             <div class="footer-brand">
                 <a href="#" class="logo">
-                    <img src="assets/branding/profile.jpg" alt="AstroxDevz Logo" class="logo-img">
+                    <img src="assets/branding/profile.jpg" alt="AstroxDevz Logo" class="logo-img" width="34" height="34" loading="lazy" decoding="async">
                     <span>AstroxDevz</span>
                 </a>
                 <p data-i18n="footer_sub">Creators of Project Exodus • Independent PC Game Studio</p>
