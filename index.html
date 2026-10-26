@@ -542,123 +542,6 @@
             line-height: 1.65;
         }
 
-        /* BESTIARY / SPECIMEN SECTION */
-        .bestiary-section {
-            max-width: 1240px;
-            margin: 0 auto;
-            padding: 3rem 1.5rem 6.5rem;
-        }
-
-        .bestiary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .specimen-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        .specimen-card:hover {
-            border-color: var(--border-glow);
-            transform: translateY(-5px);
-            box-shadow: 0 16px 36px rgba(0, 210, 255, 0.18);
-        }
-
-        .specimen-img-wrap {
-            position: relative;
-            background: #060911;
-            padding: 1.25rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            aspect-ratio: 1 / 1;
-        }
-
-        .specimen-img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            transition: transform 0.4s ease;
-            filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.6));
-        }
-
-        .specimen-card:hover .specimen-img {
-            transform: scale(1.08);
-        }
-
-        .specimen-threat {
-            position: absolute;
-            top: 0.85rem;
-            right: 0.85rem;
-            font-size: 0.72rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            padding: 0.25rem 0.65rem;
-            border-radius: 4px;
-            letter-spacing: 0.05em;
-        }
-
-        .threat-extreme {
-            background: rgba(239, 68, 68, 0.2);
-            border: 1px solid rgba(239, 68, 68, 0.5);
-            color: #ef4444;
-        }
-
-        .threat-high {
-            background: rgba(245, 158, 11, 0.2);
-            border: 1px solid rgba(245, 158, 11, 0.5);
-            color: #f59e0b;
-        }
-
-        .threat-medium {
-            background: rgba(139, 92, 246, 0.2);
-            border: 1px solid rgba(139, 92, 246, 0.5);
-            color: #c084fc;
-        }
-
-        .threat-special {
-            background: rgba(0, 210, 255, 0.2);
-            border: 1px solid rgba(0, 210, 255, 0.5);
-            color: #00d2ff;
-        }
-
-        .specimen-info {
-            padding: 1.4rem;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .specimen-code {
-            font-family: var(--font-mono);
-            font-size: 0.78rem;
-            color: var(--accent-cyan);
-            letter-spacing: 0.05em;
-            margin-bottom: 0.35rem;
-        }
-
-        .specimen-name {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 0.6rem;
-        }
-
-        .specimen-desc {
-            color: var(--text-secondary);
-            font-size: 0.88rem;
-            line-height: 1.55;
-        }
-
         /* SCREENSHOTS GALLERY */
         .gallery-section {
             max-width: 1240px;
@@ -677,16 +560,16 @@
             border-radius: 14px;
             overflow: hidden;
             border: 1px solid var(--border-color);
-            background: var(--bg-secondary);
+            background: #000;
             cursor: pointer;
             aspect-ratio: 16 / 9;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .gallery-item:hover {
-            border-color: var(--border-glow);
+            border-color: var(--accent-cyan);
             transform: translateY(-4px);
-            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
+            box-shadow: 0 16px 36px rgba(0, 210, 255, 0.25);
         }
 
         .gallery-item img {
@@ -698,32 +581,7 @@
         }
 
         .gallery-item:hover img {
-            transform: scale(1.05);
-        }
-
-        .gallery-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(0deg, rgba(6, 8, 13, 0.85) 0%, rgba(6, 8, 13, 0.2) 50%, transparent 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 1.25rem;
-            opacity: 0.9;
-            transition: opacity 0.3s ease;
-        }
-
-        .gallery-title {
-            color: #fff;
-            font-size: 1rem;
-            font-weight: 700;
-        }
-
-        .gallery-sub {
-            color: var(--accent-cyan);
-            font-size: 0.78rem;
-            font-family: var(--font-mono);
-            margin-top: 0.2rem;
+            transform: scale(1.04);
         }
 
         /* LIGHTBOX MODAL */
@@ -1067,7 +925,6 @@
                 <li><a href="#game" data-i18n="nav_game">Project Exodus</a></li>
                 <li><a href="#trailer" data-i18n="nav_trailer">Trailer</a></li>
                 <li><a href="#features" data-i18n="nav_features">Features</a></li>
-                <li><a href="#specimens" data-i18n="nav_specimens">Specimens</a></li>
                 <li><a href="#gallery" data-i18n="nav_gallery">Screenshots</a></li>
                 <li><a href="#about" data-i18n="nav_studio">Studio</a></li>
                 <li><a href="legal.html#privacy" data-i18n="nav_privacy">Privacy</a></li>
@@ -1107,9 +964,6 @@
             <a href="#trailer" class="btn-secondary">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                 <span data-i18n="btn_hero_trailer">Watch Trailer</span>
-            </a>
-            <a href="#specimens" class="btn-secondary">
-                <span data-i18n="btn_hero_specimens">Specimen Archive</span>
             </a>
         </div>
         <div class="hero-pills">
@@ -1218,176 +1072,37 @@
         </div>
     </section>
 
-    <!-- HOSTILE SPECIMENS (BESTIARY) -->
-    <section class="bestiary-section" id="specimens">
-        <div class="section-header">
-            <span class="section-tag" data-i18n="spec_tag">Ark Intelligence Database</span>
-            <h2 data-i18n="spec_heading">Hostile Fauna & Entities</h2>
-            <p data-i18n="spec_sub">Study confirmed biological entities discovered across abandoned sector complexes. Learn their behavior to survive — and to capture them alive.</p>
-        </div>
-
-        <div class="bestiary-grid">
-            <!-- SPECIMEN 1 -->
-            <div class="specimen-card">
-                <div class="specimen-img-wrap">
-                    <span class="specimen-threat threat-extreme" data-i18n="threat_lethal">Lethal</span>
-                    <img src="assets/monsters/mimic.png" alt="Mimic Specimen" class="specimen-img">
-                </div>
-                <div class="specimen-info">
-                    <span class="specimen-code">SPECIMEN #01 • AMBUSH</span>
-                    <h3 class="specimen-name" data-i18n="spec_name_mimic">The Mimic</h3>
-                    <p class="specimen-desc" data-i18n="spec_desc_mimic">Camouflages perfectly as supply crates, lockers, or abandoned machinery. Springs violently when contractors attempt extraction.</p>
-                </div>
-            </div>
-
-            <!-- SPECIMEN 2 -->
-            <div class="specimen-card">
-                <div class="specimen-img-wrap">
-                    <span class="specimen-threat threat-high" data-i18n="threat_high">High Threat</span>
-                    <img src="assets/monsters/sonic_monster.png" alt="Sonic Monster Specimen" class="specimen-img">
-                </div>
-                <div class="specimen-info">
-                    <span class="specimen-code">SPECIMEN #02 • AUDITORY</span>
-                    <h3 class="specimen-name" data-i18n="spec_name_sonic">Sonic Stalker</h3>
-                    <p class="specimen-desc" data-i18n="spec_desc_sonic">Completely blind, but guided by hyper-sensitive acoustic sensors. Running, speaking, or dropping heavy loot alerts it instantly.</p>
-                </div>
-            </div>
-
-            <!-- SPECIMEN 3 -->
-            <div class="specimen-card">
-                <div class="specimen-img-wrap">
-                    <span class="specimen-threat threat-extreme" data-i18n="threat_lethal">Lethal</span>
-                    <img src="assets/monsters/laser_eye.png" alt="Laser Eye Specimen" class="specimen-img">
-                </div>
-                <div class="specimen-info">
-                    <span class="specimen-code">SPECIMEN #03 • SENTINEL</span>
-                    <h3 class="specimen-name" data-i18n="spec_name_lasereye">Laser Eye</h3>
-                    <p class="specimen-desc" data-i18n="spec_desc_lasereye">Hovers along main corridors scanning with high-energy ocular beams. Break line of sight immediately or suffer instantaneous thermal incineration.</p>
-                </div>
-            </div>
-
-            <!-- SPECIMEN 4 -->
-            <div class="specimen-card">
-                <div class="specimen-img-wrap">
-                    <span class="specimen-threat threat-high" data-i18n="threat_high">High Threat</span>
-                    <img src="assets/monsters/the_hand.png" alt="The Hand Specimen" class="specimen-img">
-                </div>
-                <div class="specimen-info">
-                    <span class="specimen-code">SPECIMEN #04 • PHYSICAL</span>
-                    <h3 class="specimen-name" data-i18n="spec_name_thehand">The Hand</h3>
-                    <p class="specimen-desc" data-i18n="spec_desc_thehand">A monstrous appendage crawling across ceilings and pipe ducts. Grabs isolated operatives and drags them into unreachable air vents.</p>
-                </div>
-            </div>
-
-            <!-- SPECIMEN 5 -->
-            <div class="specimen-card">
-                <div class="specimen-img-wrap">
-                    <span class="specimen-threat threat-medium" data-i18n="threat_medium">Medium</span>
-                    <img src="assets/monsters/nimbus.png" alt="Nimbus Specimen" class="specimen-img">
-                </div>
-                <div class="specimen-info">
-                    <span class="specimen-code">SPECIMEN #05 • ANOMALY</span>
-                    <h3 class="specimen-name" data-i18n="spec_name_nimbus">Nimbus Cloud</h3>
-                    <p class="specimen-desc" data-i18n="spec_desc_nimbus">An atmospheric gaseous anomaly that drifts through ventilation shafts, distorting radio frequencies and impairing operative breathing.</p>
-                </div>
-            </div>
-
-            <!-- SPECIMEN 6 -->
-            <div class="specimen-card">
-                <div class="specimen-img-wrap">
-                    <span class="specimen-threat threat-high" data-i18n="threat_high">High Threat</span>
-                    <img src="assets/monsters/spikroll.png" alt="Spikroll Specimen" class="specimen-img">
-                </div>
-                <div class="specimen-info">
-                    <span class="specimen-code">SPECIMEN #06 • KINETIC</span>
-                    <h3 class="specimen-name" data-i18n="spec_name_spikroll">Spikroll</h3>
-                    <p class="specimen-desc" data-i18n="spec_desc_spikroll">Armored chitin sphere capable of reaching high acceleration down long corridors, crushing barricades and careless squadmates.</p>
-                </div>
-            </div>
-
-            <!-- SPECIMEN 7 -->
-            <div class="specimen-card">
-                <div class="specimen-img-wrap">
-                    <span class="specimen-threat threat-extreme" data-i18n="threat_lethal">Lethal</span>
-                    <img src="assets/monsters/statue.png" alt="Statue Specimen" class="specimen-img">
-                </div>
-                <div class="specimen-info">
-                    <span class="specimen-code">SPECIMEN #07 • RELIC</span>
-                    <h3 class="specimen-name" data-i18n="spec_name_statue">Weeping Relic</h3>
-                    <p class="specimen-desc" data-i18n="spec_desc_statue">Remains inert while in direct line of sight. Closes distances with lightning speed when unobserved. Never turn your back.</p>
-                </div>
-            </div>
-
-            <!-- SPECIMEN 8 (CONTRACTOR) -->
-            <div class="specimen-card">
-                <div class="specimen-img-wrap">
-                    <span class="specimen-threat threat-special" data-i18n="threat_contractor">Operative</span>
-                    <img src="assets/monsters/player.png" alt="Contractor Suit" class="specimen-img">
-                </div>
-                <div class="specimen-info">
-                    <span class="specimen-code">PERSONNEL • EXPEDITION</span>
-                    <h3 class="specimen-name" data-i18n="spec_name_contractor">Ark Contractor</h3>
-                    <p class="specimen-desc" data-i18n="spec_desc_contractor">Equipped with standard pressurized EVA hazard suit, Net-Launcher rig, and oxygen filtration backpack. Easily disposable by management.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- SCREENSHOTS GALLERY -->
     <section class="gallery-section" id="gallery">
         <div class="section-header">
             <span class="section-tag" data-i18n="gallery_tag">In-Game Footage</span>
-            <h2 data-i18n="gallery_heading">Mission Dispatches & Visuals</h2>
-            <p data-i18n="gallery_sub">Actual gameplay snapshots captured inside Unreal Engine 5. Click any photo to examine the high-definition sector environment.</p>
+            <h2 data-i18n="gallery_heading">Screenshots</h2>
+            <p data-i18n="gallery_sub">Actual gameplay snapshots captured directly in Unreal Engine 5.</p>
         </div>
 
         <div class="gallery-grid">
             <div class="gallery-item" data-full="assets/screenshots/screen1_world.png">
-                <img src="assets/screenshots/screen1_world.png" alt="Planetary Surface Dropzone">
-                <div class="gallery-overlay">
-                    <div class="gallery-title" data-i18n="gal_title_1">Planetary Surface Dropzone</div>
-                    <div class="gallery-sub">SECTOR 04 // EXTERIOR PERIMETER</div>
-                </div>
+                <img src="assets/screenshots/screen1_world.png" alt="Project Exodus In-Game Screenshot">
             </div>
 
             <div class="gallery-item" data-full="assets/screenshots/screen2_interior.png">
-                <img src="assets/screenshots/screen2_interior.png" alt="Subterranean Corridors">
-                <div class="gallery-overlay">
-                    <div class="gallery-title" data-i18n="gal_title_2">Deep Industrial Complex</div>
-                    <div class="gallery-sub">SECTOR 02 // CARGO TUNNEL 4B</div>
-                </div>
+                <img src="assets/screenshots/screen2_interior.png" alt="Project Exodus In-Game Screenshot">
             </div>
 
             <div class="gallery-item" data-full="assets/screenshots/screen3_extraction.png">
-                <img src="assets/screenshots/screen3_extraction.png" alt="Contractor Extraction Chamber">
-                <div class="gallery-overlay">
-                    <div class="gallery-title" data-i18n="gal_title_3">Cargo Quarantine Airlock</div>
-                    <div class="gallery-sub">EXTRACTION BAY // BIOMASS VAULT</div>
-                </div>
+                <img src="assets/screenshots/screen3_extraction.png" alt="Project Exodus In-Game Screenshot">
             </div>
 
             <div class="gallery-item" data-full="assets/screenshots/screen4_action.png">
-                <img src="assets/screenshots/screen4_action.png" alt="Co-op Specimen Capture">
-                <div class="gallery-overlay">
-                    <div class="gallery-title" data-i18n="gal_title_4">Live Creature Containment Phase</div>
-                    <div class="gallery-sub">NET-LAUNCHER DEPLOYMENT // LAB 08</div>
-                </div>
+                <img src="assets/screenshots/screen4_action.png" alt="Project Exodus In-Game Screenshot">
             </div>
 
             <div class="gallery-item" data-full="assets/screenshots/screen5_coop.png">
-                <img src="assets/screenshots/screen5_coop.png" alt="Tactical Squad Comms">
-                <div class="gallery-overlay">
-                    <div class="gallery-title" data-i18n="gal_title_5">Squad Synchronization</div>
-                    <div class="gallery-sub">PROXIMITY AUDIO // DEEP SECTOR</div>
-                </div>
+                <img src="assets/screenshots/screen5_coop.png" alt="Project Exodus In-Game Screenshot">
             </div>
 
             <div class="gallery-item" data-full="assets/screenshots/screen6_atmosphere.png">
-                <img src="assets/screenshots/screen6_atmosphere.png" alt="Abandoned Quarantine Wing">
-                <div class="gallery-overlay">
-                    <div class="gallery-title" data-i18n="gal_title_6">Quarantine Containment Wing</div>
-                    <div class="gallery-sub">BIO-HAZARD DETECTED // ZERO LIGHT</div>
-                </div>
+                <img src="assets/screenshots/screen6_atmosphere.png" alt="Project Exodus In-Game Screenshot">
             </div>
         </div>
     </section>
@@ -1485,7 +1200,6 @@
             <ul class="footer-links">
                 <li><a href="#game" data-i18n="nav_game">Project Exodus</a></li>
                 <li><a href="#trailer" data-i18n="nav_trailer">Trailer</a></li>
-                <li><a href="#specimens" data-i18n="nav_specimens">Specimens</a></li>
                 <li><a href="#gallery" data-i18n="nav_gallery">Screenshots</a></li>
                 <li><a href="legal.html#privacy" data-i18n="nav_privacy">Privacy Policy</a></li>
                 <li><a href="legal.html#eula" data-i18n="nav_eula">EULA</a></li>
@@ -1504,7 +1218,6 @@
                 nav_game: "Project Exodus",
                 nav_trailer: "Trailer",
                 nav_features: "Features",
-                nav_specimens: "Specimens",
                 nav_gallery: "Screenshots",
                 nav_studio: "Studio",
                 nav_privacy: "Privacy",
@@ -1514,7 +1227,6 @@
                 hero_tagline: "A tense cooperative extraction survival thriller. Infiltrate abandoned planetary complexes, extract volatile Biomass, capture hostile specimens alive, and survive the syndicate quota.",
                 btn_hero_steam: "Wishlist on Steam",
                 btn_hero_trailer: "Watch Trailer",
-                btn_hero_specimens: "Specimen Archive",
                 pill_coop: "1 - 6 Players Online Co-op",
                 pill_voice: "Proximity Voice Chat",
                 pill_procedural: "Procedural Complex Generation",
@@ -1540,38 +1252,9 @@
                 feat_desc_5: "Death doesn't bench you. Fallen operatives boot up into agile scout Minibots, providing real-time camera reconnaissance, spotting monster paths, and guiding teammates safely to the airlock.",
                 feat_title_6: "Shared Arsenal & Equipment",
                 feat_desc_6: "Pool hard-earned credits to purchase specialized gadgets, high-voltage tasers, sonar radars, thermal vision sensors, and jump-thruster upgrades before your drop.",
-                spec_tag: "Ark Intelligence Database",
-                spec_heading: "Hostile Fauna & Entities",
-                spec_sub: "Study confirmed biological entities discovered across abandoned sector complexes. Learn their behavior to survive — and to capture them alive.",
-                threat_lethal: "Lethal",
-                threat_high: "High Threat",
-                threat_medium: "Medium",
-                threat_contractor: "Operative",
-                spec_name_mimic: "The Mimic",
-                spec_desc_mimic: "Camouflages perfectly as supply crates, lockers, or abandoned machinery. Springs violently when contractors attempt extraction.",
-                spec_name_sonic: "Sonic Stalker",
-                spec_desc_sonic: "Completely blind, but guided by hyper-sensitive acoustic sensors. Running, speaking, or dropping heavy loot alerts it instantly.",
-                spec_name_lasereye: "Laser Eye",
-                spec_desc_lasereye: "Hovers along main corridors scanning with high-energy ocular beams. Break line of sight immediately or suffer instantaneous thermal incineration.",
-                spec_name_thehand: "The Hand",
-                spec_desc_thehand: "A monstrous appendage crawling across ceilings and pipe ducts. Grabs isolated operatives and drags them into unreachable air vents.",
-                spec_name_nimbus: "Nimbus Cloud",
-                spec_desc_nimbus: "An atmospheric gaseous anomaly that drifts through ventilation shafts, distorting radio frequencies and impairing operative breathing.",
-                spec_name_spikroll: "Spikroll",
-                spec_desc_spikroll: "Armored chitin sphere capable of reaching high acceleration down long corridors, crushing barricades and careless squadmates.",
-                spec_name_statue: "Weeping Relic",
-                spec_desc_statue: "Remains inert while in direct line of sight. Closes distances with lightning speed when unobserved. Never turn your back.",
-                spec_name_contractor: "Ark Contractor",
-                spec_desc_contractor: "Equipped with standard pressurized EVA hazard suit, Net-Launcher rig, and oxygen filtration backpack. Easily disposable by management.",
                 gallery_tag: "In-Game Footage",
-                gallery_heading: "Mission Dispatches & Visuals",
-                gallery_sub: "Actual gameplay snapshots captured inside Unreal Engine 5. Click any photo to examine the high-definition sector environment.",
-                gal_title_1: "Planetary Surface Dropzone",
-                gal_title_2: "Deep Industrial Complex",
-                gal_title_3: "Cargo Quarantine Airlock",
-                gal_title_4: "Live Creature Containment Phase",
-                gal_title_5: "Squad Synchronization",
-                gal_title_6: "Quarantine Containment Wing",
+                gallery_heading: "Screenshots",
+                gallery_sub: "Actual gameplay snapshots captured directly in Unreal Engine 5.",
                 overview_tag: "Game Dossier",
                 overview_heading: "Built for High Tension & Unforgiving Survival",
                 overview_desc: "Project Exodus challenges you and up to 5 friends to descend into post-apocalyptic horrors where cooperation is mandatory and mistakes are fatal. Coordinate roles, trap monsters, collect strange artifacts, and purchase gear upgrades to meet your quota.",
@@ -1596,7 +1279,6 @@
                 nav_game: "Project Exodus",
                 nav_trailer: "Tráiler",
                 nav_features: "Jugabilidad",
-                nav_specimens: "Especímenes",
                 nav_gallery: "Capturas",
                 nav_studio: "Estudio",
                 nav_privacy: "Privacidad",
@@ -1606,7 +1288,6 @@
                 hero_tagline: "Un tenso thriller cooperativo de extracción y supervivencia. Infiltra complejos planetarios abandonados, extrae biomasa volátil, captura especímenes hostiles con vida y sobrevive a la cuota del sindicato.",
                 btn_hero_steam: "Añadir a Deseados en Steam",
                 btn_hero_trailer: "Ver Tráiler",
-                btn_hero_specimens: "Archivo de Especímenes",
                 pill_coop: "1 - 6 Jugadores Co-op Online",
                 pill_voice: "Chat de Voz por Proximidad",
                 pill_procedural: "Generación Procedural de Complejos",
@@ -1632,38 +1313,9 @@
                 feat_desc_5: "Morir no es el final de la ronda. Los operativos caídos toman el control de ágiles drones Minibots para explorar esquinas, advertir peligros y guiar a los supervivientes hasta la esclusa.",
                 feat_title_6: "Arsenal y Equipo Compartido",
                 feat_desc_6: "Reúne créditos en equipo para adquirir linternas avanzadas, radares sónicos, sensores térmicos, aturdidores y propulsores antes de descender al siguiente nivel de peligro.",
-                spec_tag: "Base de Datos del Arca",
-                spec_heading: "Fauna Hostil y Entidades",
-                spec_sub: "Estudia las anomalías biológicas documentadas en los complejos abandonados. Conoce sus patrones de caza para sobrevivir y poder atraparlas vivas.",
-                threat_lethal: "Letal",
-                threat_high: "Peligro Alto",
-                threat_medium: "Peligro Medio",
-                threat_contractor: "Operativo",
-                spec_name_mimic: "El Mímico",
-                spec_desc_mimic: "Se camufla a la perfección imitando contenedores de suministros, taquillas o maquinaria. Ataca de improvisto cuando los contratistas intentan abrirlos.",
-                spec_name_sonic: "Merodeador Sónico",
-                spec_desc_sonic: "Completamente ciego, pero dotado de una audición hiperdesarrollada. Correr, hablar en voz alta o soltar chatarra alertará de inmediato su veloz embestida.",
-                spec_name_lasereye: "Ojo Centinela",
-                spec_desc_lasereye: "Patrulla flotando por los corredores principales proyectando un haz ocular mortal. Rompe la línea de visión al instante o serás incinerado en segundos.",
-                spec_name_thehand: "La Mano",
-                spec_desc_thehand: "Una colosal extremidad biomecánica que repta por techos y tuberías. Atrapa a los operativos rezagados y los arrastra hacia los conductos de ventilación.",
-                spec_name_nimbus: "Nube Nimbus",
-                spec_desc_nimbus: "Entidad anómala de vapor condensado que recorre las chimeneas de ventilación, interfiriendo las transmisiones de radio y asfixiando a quienes la atraviesan.",
-                spec_name_spikroll: "Spikroll Blindado",
-                spec_desc_spikroll: "Masa esférica acorazada con espinas retráctiles que acelera a gran velocidad por pasillos rectos, arrasando barricadas y aplastando todo a su paso.",
-                spec_name_statue: "Reliquia Llorona",
-                spec_desc_statue: "Permanece completamente inmóvil mientras alguien mantenga contacto visual directo. Se desplaza a velocidad de vértigo cuando no se la mira. Nunca le des la espalda.",
-                spec_name_contractor: "Operativo del Arca",
-                spec_desc_contractor: "Equipado con traje presurizado para entornos tóxicos, arnés de lanza-redes y filtrado de oxígeno. Totalmente prescindible para los mandos de la misión.",
-                gallery_tag: "Imágenes Reales del Juego",
-                gallery_heading: "Despachos y Capturas de Misión",
-                gallery_sub: "Fotografías reales in-game tomadas directamente en Unreal Engine 5. Haz clic en cualquier imagen para verla en alta resolución.",
-                gal_title_1: "Zona de Aterrizaje en Superficie",
-                gal_title_2: "Complejo Industrial Subterráneo",
-                gal_title_3: "Esclusa de Cuarentena y Carga",
-                gal_title_4: "Captura de Espécimen con Lanza-Redes",
-                gal_title_5: "Coordinación Táctica de Escuadrón",
-                gal_title_6: "Ala de Cuarentena y Contención",
+                gallery_tag: "Imágenes del Juego",
+                gallery_heading: "Capturas de Pantalla",
+                gallery_sub: "Imágenes reales del juego capturadas directamente en Unreal Engine 5.",
                 overview_tag: "Ficha del Juego",
                 overview_heading: "Diseñado para la Tensión Extrema y el Cooperativo",
                 overview_desc: "Project Exodus te reta a ti y hasta a 5 amigos a descender en una pesadilla postapocalíptica donde el trabajo en equipo es obligatorio y los errores se pagan caros. Coordina roles, atrapa monstruos, reúne extraños artefactos y compra mejoras para cumplir la cuota del sindicato.",
