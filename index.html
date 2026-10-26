@@ -881,6 +881,29 @@
             pointer-events: none;
         }
 
+        .about-avatar-wrap {
+            margin: 0 auto 1.5rem;
+            width: 120px;
+            height: 120px;
+            position: relative;
+        }
+
+        .about-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-cyan);
+            box-shadow: 0 0 25px rgba(0, 210, 255, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: block;
+        }
+
+        .about-avatar:hover {
+            transform: scale(1.06);
+            box-shadow: 0 0 35px rgba(0, 210, 255, 0.65);
+        }
+
         .about-card h2 {
             font-size: 2.2rem;
             font-weight: 800;
@@ -1424,6 +1447,9 @@
     <!-- ABOUT STUDIO SECTION -->
     <section class="about" id="about">
         <div class="about-card">
+            <div class="about-avatar-wrap">
+                <img src="assets/branding/profile.jpg" alt="AstroxDevz Avatar" class="about-avatar">
+            </div>
             <span class="section-tag" data-i18n="studio_tag">Independent Game Studio</span>
             <h2 data-i18n="studio_heading">About AstroxDevz</h2>
             <p data-i18n="studio_desc">AstroxDevz is an independent game development studio founded by Astrox, dedicated to crafting immersive, atmospheric, mechanics-driven PC experiences in Unreal Engine 5. We design games where player agency, fair challenge, and genuine multiplayer tension take center stage.</p>
