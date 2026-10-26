@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy & EULA | Project Exodus - AstroxStudio</title>
+    <meta name="description" content="Official Privacy Policy and End User License Agreement (EULA) for Project Exodus by AstroxStudio.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0b0e14;
+            --bg-secondary: #121824;
+            --bg-card: #182030;
+            --bg-card-hover: #1e293d;
+            --text-primary: #f0f4fc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-cyan: #00d2ff;
+            --accent-blue: #3a82f7;
+            --accent-green: #10b981;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(0, 210, 255, 0.3);
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            background-image: 
+                radial-gradient(ellipse at 20% 0%, rgba(58, 130, 247, 0.12) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 100%, rgba(0, 210, 255, 0.08) 0%, transparent 50%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER */
+        header {
+            background: rgba(18, 24, 36, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .brand-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-decoration: none;
+        }
+
+        .brand-badge {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            color: #050a14;
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+            letter-spacing: 0.05em;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* LANGUAGE SELECTOR */
+        .lang-switch {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.2rem;
+            gap: 0.2rem;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.35rem 0.7rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .lang-btn:hover {
+            color: #fff;
+        }
+
+        .lang-btn.active {
+            background: var(--bg-card);
+            color: var(--accent-cyan);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* HERO & TABS */
+        .hero {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem 1.5rem;
+            width: 100%;
+        }
+
+        .hero h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #ffffff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-meta {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .tab-nav {
+            display: flex;
+            gap: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.75rem;
+        }
+
+        .tab-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 0.65rem 1.35rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--border-hover);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(58, 130, 247, 0.2), rgba(0, 210, 255, 0.15));
+            border-color: var(--accent-cyan);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(0, 210, 255, 0.15);
+        }
+
+        /* MAIN CONTENT */
+        main {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 1.5rem 1.5rem 4rem;
+            width: 100%;
+            flex: 1;
+        }
+
+        .content-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.25s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* TYPOGRAPHY */
+        h2 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        h2:first-of-type {
+            margin-top: 0;
+        }
+
+        h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin: 1.5rem 0 0.6rem;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 1.1rem;
+        }
+
+        ul, ol {
+            color: var(--text-secondary);
+            margin-left: 1.6rem;
+            margin-bottom: 1.25rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        strong {
+            color: #fff;
+        }
+
+        /* HIGHLIGHT CALLOUT */
+        .callout {
+            background: rgba(0, 210, 255, 0.06);
+            border-left: 4px solid var(--accent-cyan);
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+
+        .callout p {
+            margin-bottom: 0;
+            color: #d1fae5;
+            font-size: 0.95rem;
+        }
+
+        .callout.green {
+            background: rgba(16, 185, 129, 0.08);
+            border-left-color: var(--accent-green);
+        }
+
+        .callout.green p {
+            color: #d1fae5;
+        }
+
+        /* TABLE */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.92rem;
+            text-align: left;
+        }
+
+        th {
+            background: var(--bg-card);
+            color: #fff;
+            padding: 0.85rem 1rem;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: var(--text-secondary);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        code {
+            font-family: var(--font-mono);
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--accent-cyan);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-top: auto;
+        }
+
+        footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        footer a:hover {
+            color: var(--accent-cyan);
+        }
+
+        @media (max-width: 640px) {
+            .content-card {
+                padding: 1.5rem;
+            }
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+            .tab-nav {
+                flex-direction: column;
+            }
+            .tab-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="brand-title">
+                <span>Project Exodus</span>
+                <span class="brand-badge">AstroxDevz</span>
+            </a>
+            <div class="header-controls">
+                <div class="lang-switch" role="group" aria-label="Language selection">
+                    <button class="lang-btn active" data-lang="en">EN</button>
+                    <button class="lang-btn" data-lang="es">ES</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO & TAB NAVIGATION -->
+    <div class="hero">
+        <h1 id="hero-title">Legal Documentation</h1>
+        <p class="hero-meta" id="hero-meta">Last Updated: October 26, 2026</p>
+        <div class="tab-nav">
+            <a href="#privacy" class="tab-btn active" data-tab="privacy">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                <span data-i18n="tab_privacy">Privacy Policy</span>
+            </a>
+            <a href="#eula" class="tab-btn" data-tab="eula">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                <span data-i18n="tab_eula">EULA Agreement</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- MAIN BODY -->
+    <main>
+        <div class="content-card">
+
+            <!-- ========================================== -->
+            <!-- TAB: PRIVACY POLICY                        -->
+            <!-- ========================================== -->
+            <section id="privacy" class="tab-content active">
+                
+                <!-- ENGLISH PRIVACY -->
+                <div class="lang-content lang-en">
+                    <h2>1. Overview & Privacy Commitment</h2>
+                    <p>Welcome to <strong>Project Exodus</strong>, developed by <strong>AstroxStudio</strong> ("we", "us", or "our"). We believe in absolute respect for player privacy. Our core philosophy is built upon <strong>Privacy by Design (Zero PII)</strong>: we do not collect, process, or sell any Personally Identifiable Information.</p>
+                    
+                    <div class="callout green">
+                        <p><strong>Strict Zero PII Guarantee:</strong> We do NOT collect your real name, email, physical address, IP address, hardware MAC address, or your Steam ID (SteamID64).</p>
+                    </div>
+
+                    <h2>2. Anonymous Gameplay Telemetry</h2>
+                    <p>To improve game balance, fix procedural level generation issues, and diagnose technical difficulty curves, <em>Project Exodus</em> collects anonymous gameplay telemetry during matches. The data gathered includes:</p>
+                    
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Data Collected</th>
+                                    <th>Purpose</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Player Deaths</strong></td>
+                                    <td>Player state (Alive / Minibot), cause of death (enemy/hazard), 3D spatial position (X, Y, Z), map name, dungeon seed, and elapsed round time.</td>
+                                    <td>To generate 3D death heatmaps and identify unbalanced enemy encounters or level design choke points.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Artifacts</strong></td>
+                                    <td>Artifact type and quantity extracted.</td>
+                                    <td>To balance artifact spawn rates and exploration reward economies.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Enemy Captures</strong></td>
+                                    <td>Captured enemy class/type and quantity.</td>
+                                    <td>To balance capture difficulty, trap utility, and bounty rewards.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Round Summaries</strong></td>
+                                    <td>Money collected, biomass acquired, surviving players count, elapsed time vs requested time, and round ending reason (Time Expired, Team Wipe, Strategic Decision).</td>
+                                    <td>To evaluate mission difficulty and overall co-op match pacing.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Economy & Upgrades</strong></td>
+                                    <td>Biomass delivered, items purchased, and artifacts sold in the ship shop.</td>
+                                    <td>To ensure store upgrades and progression quotas are mathematically achievable and fair.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>3. How Player Identity Is Handled (GDPR Recital 26)</h2>
+                    <p>All telemetry events are associated exclusively with an ephemeral, locally generated random identifier (UUID v4), such as <code>4a8f9c2d-8e7a-4211-923f-561b3e94a821</code>, saved in your local user settings. Under <strong>Article 4(1) and Recital 26 of the EU General Data Protection Regulation (GDPR)</strong>, this data is strictly non-identifiable and fully anonymized.</p>
+
+                    <h2>4. Third-Party Analytics Services</h2>
+                    <p>We use <strong>GameAnalytics</strong> (GameAnalytics ApS) and <strong>Sentry</strong> solely for processing aggregate crash reports and gameplay design metrics. GameAnalytics complies with GDPR regulations and standard European privacy frameworks. Neither we nor our service providers use this data for targeted advertising, marketing, or behavioral profiling across other apps.</p>
+
+                    <h2>5. User Control & Opt-Out</h2>
+                    <p>Even though our telemetry contains zero personal data, we provide transparency and user choice. You can enable or disable anonymous telemetry at any time directly within the game's settings menu (<em>Settings &gt; Gameplay &gt; Anonymous Telemetry</em>). When disabled, event transmission is immediately terminated.</p>
+
+                    <h2>6. Children's Privacy</h2>
+                    <p><em>Project Exodus</em> does not knowingly collect any personal information from children under the age of 13 (or under 16 in the European Union). Because our systems only capture anonymous game mechanics, no child-identifying data is ever stored.</p>
+
+                    <h2>7. Contact Information</h2>
+                    <p>If you have any questions or inquiries regarding this Privacy Policy, you can reach out to our team at:</p>
+                    <p><strong>AstroxStudio</strong><br>Email: <code>dev.astrox@gmail.com</code><br>Steam Community Hub: <em>Project Exodus Discussions</em></p>
+                </div>
+
+                <!-- SPANISH PRIVACY -->
+                <div class="lang-content lang-es" style="display: none;">
+                    <h2>1. Resumen y Compromiso de Privacidad</h2>
+                    <p>Bienvenido a <strong>Project Exodus</strong>, desarrollado por <strong>AstroxStudio</strong> ("nosotros"). Creemos firmemente en el respeto total hacia la privacidad de los jugadores. Toda nuestra arquitectura se fundamenta en la <strong>Privacidad por Diseño (Cero PII)</strong>: no recopilamos, no procesamos ni comercializamos ningún dato de carácter personal.</p>
+                    
+                    <div class="callout green">
+                        <p><strong>Garantía de Cero Datos Personales:</strong> NO recopilamos tu nombre real, correo electrónico, dirección física, dirección IP, dirección MAC de hardware ni tu identificador de cuenta de Steam (SteamID64).</p>
+                    </div>
+
+                    <h2>2. Telemetría de Juego Anónima</h2>
+                    <p>Para equilibrar la dificultad, optimizar la generación procedural de niveles y subsanar fallos de diseño, <em>Project Exodus</em> recoge métricas telemétricas anónimas durante las incursiones. Los datos recabados incluyen:</p>
+                    
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Categoría</th>
+                                    <th>Datos Recogidos</th>
+                                    <th>Finalidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Muertes de Jugador</strong></td>
+                                    <td>Estado (Vivo / Minibot), causa de muerte (enemigo/trampa), posición 3D (X, Y, Z), mapa, semilla procedural y tiempo transcurrido en la ronda.</td>
+                                    <td>Crear mapas de calor 3D para identificar zonas de atasco, bordes sin barandillas o trampas descompensadas.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Artefactos</strong></td>
+                                    <td>Tipo de artefacto y cantidad extraída.</td>
+                                    <td>Ajustar la frecuencia de aparición de reliquias y la economía de exploración.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Enemigos Capturados</strong></td>
+                                    <td>Clase de enemigo capturado y cantidad.</td>
+                                    <td>Equilibrar la dificultad de captura, el uso de trampas y las recompensas otorgadas.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Resumen de Ronda</strong></td>
+                                    <td>Dinero y biomasa recolectados, jugadores vivos y en minibot, tiempo real frente al tiempo elegido y motivo del fin de ronda (tiempo, derrota o decisión estratégica).</td>
+                                    <td>Evaluar el ritmo de las partidas y la curva de dificultad cooperativa.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Economía y Mejoras</strong></td>
+                                    <td>Biomasa entregada en la cuota, compras en la tienda y venta de reliquias en la nave.</td>
+                                    <td>Asegurar que los precios de las mejoras y los objetivos de cuota sean matemáticamente justos.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>3. Tratamiento de la Identidad (Cumplimiento RGPD)</h2>
+                    <p>Todos los eventos telemétricos se asocian de forma exclusiva a un identificador aleatorio efímero (UUID v4), generado localmente en tu equipo (ej. <code>4a8f9c2d-8e7a-4211-923f-561b3e94a821</code>). Según el <strong>Considerando 26 del Reglamento General de Protección de Datos (RGPD) de la Unión Europea</strong>, estos datos son estrictamente anónimos y quedan fuera del ámbito de los datos personales.</p>
+
+                    <h2>4. Proveedores Técnicos de Analítica</h2>
+                    <p>Utilizamos <strong>GameAnalytics</strong> (GameAnalytics ApS) y <strong>Sentry</strong> únicamente para la recepción de informes técnicos de errores y análisis de balanceo de diseño. Ninguno de estos servicios utiliza los datos con fines de publicidad dirigida, segmentación comercial ni rastreo entre diferentes aplicaciones.</p>
+
+                    <h2>5. Control del Usuario y Desactivación</h2>
+                    <p>Aunque nuestra telemetría no contiene información personal, respetamos tu decisión. Puedes desactivar o activar el envío de estadísticas anónimas en cualquier momento desde el menú de opciones del juego (<em>Ajustes &gt; Juego &gt; Telemetría anónima</em>). Si se desactiva, el envío cesa de inmediato.</p>
+
+                    <h2>6. Contacto</h2>
+                    <p>Si tienes cualquier duda acerca de esta política, puedes contactarnos en:</p>
+                    <p><strong>AstroxStudio</strong><br>Correo: <code>dev.astrox@gmail.com</code><br>Punto de Encuentro de la Comunidad de Steam: <em>Project Exodus</em></p>
+                </div>
+            </section>
+
+
+            <!-- ========================================== -->
+            <!-- TAB: EULA AGREEMENT                        -->
+            <!-- ========================================== -->
+            <section id="eula" class="tab-content">
+                
+                <!-- ENGLISH EULA -->
+                <div class="lang-content lang-en">
+                    <h2>1. End User License Agreement (EULA)</h2>
+                    <p>This End User License Agreement ("Agreement" or "EULA") is a legally binding contract between you (the "User") and <strong>AstroxStudio</strong> ("Developer") governing the use of the video game <strong>Project Exodus</strong>, including all updates, downloadable content, and documentation.</p>
+                    <p>By purchasing, downloading, installing, or playing <em>Project Exodus</em> through Steam or any authorized platform, you agree to be bound by the terms of this Agreement.</p>
+
+                    <h2>2. License Grant & Ownership</h2>
+                    <p>AstroxStudio grants you a non-exclusive, non-transferable, revocable, limited license to install and play the game for your personal, non-commercial entertainment. All title, intellectual property rights, assets, audio, graphics, and source code remain the exclusive property of AstroxStudio.</p>
+
+                    <h2>3. Prohibited Conduct & Multiplayer Rules</h2>
+                    <p>To ensure a safe and enjoyable cooperative experience for everyone, you agree NOT to:</p>
+                    <ul>
+                        <li>Use cheats, automation software (bots), hacks, or unauthorized third-party software that alters game memory or mechanics in public matchmaking.</li>
+                        <li>Engage in harassment, hate speech, griefing, or disruptive behavior towards other players in voice or text communications.</li>
+                        <li>Reverse engineer, decompile, or disassemble game binaries, except as permitted by applicable law.</li>
+                        <li>Exploit commercial gain from the game's proprietary assets without express written consent.</li>
+                    </ul>
+
+                    <h2>4. Telemetry & Analytics Acknowledgement</h2>
+                    <p>You acknowledge that <em>Project Exodus</em> utilizes automated, non-personal gameplay telemetry (as outlined in our Privacy Policy) to balance weapons, maps, biomass progression, and capture mechanics. This data is fully anonymous and carries no identifiable personal information.</p>
+
+                    <h2>5. Disclaimer of Warranties & Limitation of Liability</h2>
+                    <p>The game is provided on an "AS IS" and "AS AVAILABLE" basis. To the maximum extent permitted by applicable law, AstroxStudio disclaims all warranties, express or implied. Under no circumstances will the Developer be liable for any indirect, incidental, special, or consequential damages arising from the use or inability to use the game.</p>
+
+                    <h2>6. Termination</h2>
+                    <p>This agreement remains effective until terminated. Your rights under this license will terminate automatically without notice if you fail to comply with any of its terms. Upon termination, you must cease all use and delete all copies of the software.</p>
+                </div>
+
+                <!-- SPANISH EULA -->
+                <div class="lang-content lang-es" style="display: none;">
+                    <h2>1. Acuerdo de Licencia de Usuario Final (EULA)</h2>
+                    <p>El presente Acuerdo de Licencia de Usuario Final ("Acuerdo" o "EULA") es un contrato legalmente vinculante entre usted (el "Usuario") y <strong>AstroxStudio</strong> ("Desarrollador"), que rige el uso del videojuego <strong>Project Exodus</strong>, incluyendo sus actualizaciones, contenidos descargables y documentación asociada.</p>
+                    <p>Al adquirir, descargar, instalar o ejecutar <em>Project Exodus</em> a través de Steam o cualquier plataforma autorizada, usted acepta quedar sujeto a las disposiciones de este Acuerdo.</p>
+
+                    <h2>2. Concesión de Licencia y Propiedad Intelectual</h2>
+                    <p>AstroxStudio le otorga una licencia limitada, no exclusiva, intransferible y revocable para instalar y jugar al videojuego con fines personales y de entretenimiento no comercial. Todos los derechos de propiedad intelectual, marcas, código fuente, modelos 3D y elementos sonoros permanecen como propiedad exclusiva de AstroxStudio.</p>
+
+                    <h2>3. Conducta en Multijugador y Usos Prohibidos</h2>
+                    <p>Para garantizar una experiencia cooperativa justa y gratificante, usted se compromete a NO:</p>
+                    <ul>
+                        <li>Utilizar trampas (cheats), programas de automatización (bots), modificaciones no autorizadas o exploits que alteren la jugabilidad o la memoria del proceso en partidas públicas.</li>
+                        <li>Incurrir en conductas de acoso, incitación al odio, sabotaje deliberado de partidas (griefing) o abuso de comunicaciones de voz/texto.</li>
+                        <li>Realizar ingeniería inversa, descompilar o desensamblar el software salvo en los casos expresamente permitidos por la legislación aplicable.</li>
+                        <li>Comercializar con los elementos de juego o activos protegidos sin autorización expresa y por escrito.</li>
+                    </ul>
+
+                    <h2>4. Reconocimiento del Sistema de Telemetría</h2>
+                    <p>El Usuario reconoce y acepta que <em>Project Exodus</em> incluye funciones telemétricas automatizadas y no personales para equilibrar la economía de biomasa, la dificultad de enemigos y la generación procedural de salas, tal como se especifica en la Política de Privacidad.</p>
+
+                    <h2>5. Limitación de Responsabilidad</h2>
+                    <p>El juego se suministra "TAL CUAL" ("AS IS"), sin garantías de ningún tipo, expresas o implícitas. En la medida máxima permitida por la legislación aplicable, AstroxStudio no será responsable de daños indirectos, incidentales o emergentes derivados del uso o imposibilidad de uso del software.</p>
+
+                    <h2>6. Resolución del Contrato</h2>
+                    <p>Este Acuerdo permanecerá en vigor hasta su rescisión. La licencia quedará cancelada de inmediato si el Usuario incumple cualquiera de sus términos. En caso de rescisión, el Usuario deberá desinstalar y destruir todas las copias del videojuego en su poder.</p>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2026 AstroxStudio / AstroxDevz. All rights reserved.</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem;">Project Exodus is a registered project name. Valve, Steam, and the Steam logo are trademarks of Valve Corporation.</p>
+    </footer>
+
+    <!-- INTERACTIVITY SCRIPT -->
+    <script>
+        // Tab switching
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        function switchTab(tabId) {
+            tabBtns.forEach(btn => {
+                if (btn.dataset.tab === tabId) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            tabContents.forEach(content => {
+                if (content.id === tabId) {
+                    content.classList.add('active');
+                } else {
+                    content.classList.remove('active');
+                }
+            });
+        }
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const tabId = btn.dataset.tab;
+                switchTab(tabId);
+                history.pushState(null, null, '#' + tabId);
+            });
+        });
+
+        // Language switching
+        const langBtns = document.querySelectorAll('.lang-btn');
+        const enContents = document.querySelectorAll('.lang-en');
+        const esContents = document.querySelectorAll('.lang-es');
+
+        const i18n = {
+            en: {
+                title: "Legal Documentation",
+                meta: "Last Updated: October 26, 2026",
+                tab_privacy: "Privacy Policy",
+                tab_eula: "EULA Agreement"
+            },
+            es: {
+                title: "Documentación Legal",
+                meta: "Última Actualización: 26 de Octubre de 2026",
+                tab_privacy: "Política de Privacidad",
+                tab_eula: "Acuerdo EULA"
+            }
+        };
+
+        function setLanguage(lang) {
+            langBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+
+            if (lang === 'es') {
+                enContents.forEach(el => el.style.display = 'none');
+                esContents.forEach(el => el.style.display = 'block');
+                document.getElementById('hero-title').textContent = i18n.es.title;
+                document.getElementById('hero-meta').textContent = i18n.es.meta;
+                document.querySelector('[data-i18n="tab_privacy"]').textContent = i18n.es.tab_privacy;
+                document.querySelector('[data-i18n="tab_eula"]').textContent = i18n.es.tab_eula;
+                document.documentElement.lang = 'es';
+            } else {
+                esContents.forEach(el => el.style.display = 'none');
+                enContents.forEach(el => el.style.display = 'block');
+                document.getElementById('hero-title').textContent = i18n.en.title;
+                document.getElementById('hero-meta').textContent = i18n.en.meta;
+                document.querySelector('[data-i18n="tab_privacy"]').textContent = i18n.en.tab_privacy;
+                document.querySelector('[data-i18n="tab_eula"]').textContent = i18n.en.tab_eula;
+                document.documentElement.lang = 'en';
+            }
+
+            localStorage.setItem('preferred_lang', lang);
+        }
+
+        langBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                setLanguage(btn.dataset.lang);
+            });
+        });
+
+        // URL Hash & Query param support
+        window.addEventListener('DOMContentLoaded', () => {
+            // Check language
+            const urlParams = new URLSearchParams(window.location.search);
+            const langParam = urlParams.get('lang');
+            const savedLang = localStorage.getItem('preferred_lang');
+            if (langParam === 'es' || (!langParam && savedLang === 'es')) {
+                setLanguage('es');
+            } else {
+                setLanguage('en'); // English default
+            }
+
+            // Check hash
+            const hash = window.location.hash.replace('#', '');
+            if (hash === 'eula') {
+                switchTab('eula');
+            } else {
+                switchTab('privacy');
+            }
+        });
+    </script>
+</body>
+</html>
