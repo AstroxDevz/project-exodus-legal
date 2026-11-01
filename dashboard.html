@@ -992,6 +992,10 @@
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                 <span>04 // Rondas y Misiones</span>
             </button>
+            <button class="tab-btn" data-tab="tab-economy">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
+                <span>05 // Economía y Artefactos</span>
+            </button>
         </div>
 
         <!-- ==================================================== -->
@@ -1219,6 +1223,47 @@
             </div>
         </div>
 
+        <!-- ==================================================== -->
+        <!-- TAB 5: ECONOMY & ARTIFACTS                           -->
+        <!-- ==================================================== -->
+        <div id="tab-economy" class="tab-panel">
+            <div class="data-table-container">
+                <div class="table-controls">
+                    <div class="search-box">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input type="text" id="filter-economy-search" placeholder="Buscar por artefacto, acción...">
+                    </div>
+                    <button class="btn-export" onclick="exportEconomyCSV()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        <span>EXPORTAR CSV</span>
+                    </button>
+                </div>
+
+                <div class="data-table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha / Hora</th>
+                                <th>Tipo Transacción</th>
+                                <th>Ítem / Artefacto</th>
+                                <th>Cantidad</th>
+                                <th>Dinero Ganado / Gastado</th>
+                                <th>ID Operativo (RGPD)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-economy">
+                            <tr>
+                                <td colspan="6" class="empty-state">
+                                    <div class="loading-spinner"></div>
+                                    <div>Cargando transacciones económicas...</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <!-- FOOTER -->
@@ -1241,6 +1286,7 @@
         let biomassData = [];
         let enemiesData = [];
         let artifactsData = [];
+        let economyData = [];
 
         // CHARTS INSTANCES
         let chartTimelineInstance = null;
@@ -1329,12 +1375,13 @@
         async function loadAllTelemetryData() {
             document.getElementById('system-status').textContent = 'Sincronizando...';
 
-            const [deaths, rounds, biomass, enemies, artifacts] = await Promise.all([
+            const [deaths, rounds, biomass, enemies, artifacts, economy] = await Promise.all([
                 fetchSupabaseTable('telemetry_deaths', 2000),
                 fetchSupabaseTable('telemetry_rounds', 1000),
                 fetchSupabaseTable('telemetry_biomass', 500),
                 fetchSupabaseTable('telemetry_enemies', 500),
-                fetchSupabaseTable('telemetry_artifacts', 500)
+                fetchSupabaseTable('telemetry_artifacts', 500),
+                fetchSupabaseTable('telemetry_economy', 1000)
             ]);
 
             deathsData = deaths;
@@ -1342,6 +1389,7 @@
             biomassData = biomass;
             enemiesData = enemies;
             artifactsData = artifacts;
+            economyData = economy;
 
             document.getElementById('system-status').textContent = 'Supabase Conectado';
 
@@ -1350,6 +1398,7 @@
             updateKPIs();
             renderDeathsTable();
             renderRoundsTable();
+            renderEconomyTable();
             renderCharts();
             rebuild3DHeatmap();
         }
@@ -1379,18 +1428,26 @@
             biomassData.forEach(b => totalBio += (b.biomass_delivered || 0));
             document.getElementById('kpi-biomass').textContent = totalBio.toLocaleString();
 
-            // Enemies & Artifacts
+            // Enemies & Artifacts / Economy
             let totalEnemies = 0;
             enemiesData.forEach(e => totalEnemies += (e.quantity || 1));
             let totalArt = 0;
             artifactsData.forEach(a => totalArt += (a.quantity || 1));
+            const sales = (economyData || []).filter(e => (e.action_type || '').toLowerCase() === 'sale');
+            let totalSold = 0;
+            sales.forEach(s => totalSold += (s.quantity || 1));
+            let totalSaleMoney = 0;
+            sales.forEach(s => totalSaleMoney += (s.money_amount || 0));
+
             document.getElementById('kpi-enemies').textContent = totalEnemies.toLocaleString();
-            document.getElementById('kpi-artifacts-sub').textContent = `${totalArt} artefactos extraídos`;
+            const grandTotalArt = Math.max(totalArt, totalSold) > 0 ? Math.max(totalArt, totalSold) : (totalArt + totalSold);
+            document.getElementById('kpi-artifacts-sub').textContent = `${grandTotalArt} artefactos ($${totalSaleMoney.toLocaleString()})`;
 
             // Unique Players
             const userSet = new Set();
             deathsData.forEach(d => d.anonymous_user_id && userSet.add(d.anonymous_user_id));
             roundsData.forEach(r => r.anonymous_user_id && userSet.add(r.anonymous_user_id));
+            economyData.forEach(e => e.anonymous_user_id && userSet.add(e.anonymous_user_id));
             document.getElementById('kpi-players').textContent = userSet.size.toLocaleString();
         }
 
@@ -1915,6 +1972,49 @@
             }).join('');
         }
 
+        function renderEconomyTable(filterText = '') {
+            const tbody = document.getElementById('tbody-economy');
+            if (!tbody) return;
+            const search = filterText.toLowerCase();
+
+            const filtered = (economyData || []).filter(e => {
+                if (!search) return true;
+                return (e.item_name || '').toLowerCase().includes(search) ||
+                       (e.action_type || '').toLowerCase().includes(search);
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No se han registrado ventas de artefactos ni compras aún.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.slice(0, 100).map(e => {
+                const date = e.created_at ? new Date(e.created_at).toLocaleString() : 'N/A';
+                const isSale = (e.action_type || '').toLowerCase() === 'sale';
+                const actionBadge = isSale 
+                    ? `<span style="background: rgba(16, 185, 129, 0.15); color: var(--accent-biomass); border: 1px solid var(--accent-biomass); padding: 0.2rem 0.5rem; border-radius: 3px; font-weight: 700; font-size: 0.75rem;">VENTA</span>`
+                    : `<span style="background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); border: 1px solid var(--accent-amber); padding: 0.2rem 0.5rem; border-radius: 3px; font-weight: 700; font-size: 0.75rem;">COMPRA</span>`;
+                const moneyColor = isSale ? 'var(--accent-biomass)' : 'var(--accent-amber)';
+                const moneyPrefix = isSale ? '+' : '-';
+                const user = (e.anonymous_user_id || 'Anon').substring(0, 8);
+
+                return `
+                    <tr>
+                        <td>${date}</td>
+                        <td>${actionBadge}</td>
+                        <td style="color: var(--accent-cyan); font-weight: 600;">${e.item_name || 'Artefacto'}</td>
+                        <td>${e.quantity || 1}</td>
+                        <td style="color: ${moneyColor}; font-weight: 700;">${moneyPrefix}${e.money_amount || 0} $</td>
+                        <td style="color: var(--text-muted);">${user}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function exportEconomyCSV() {
+            exportToCSV(economyData, `project_exodus_economy_${Date.now()}.csv`);
+        }
+
         // CSV & JSON Exporter Helper
         function downloadFile(content, fileName, mimeType) {
             const a = document.createElement('a');
@@ -1991,6 +2091,12 @@
             document.getElementById('search-rounds').addEventListener('input', (e) => {
                 renderRoundsTable(e.target.value);
             });
+            const searchEcon = document.getElementById('filter-economy-search');
+            if (searchEcon) {
+                searchEcon.addEventListener('input', (e) => {
+                    renderEconomyTable(e.target.value);
+                });
+            }
 
             // 3D Controls
             document.getElementById('ctl-color-mode').addEventListener('change', (e) => {
