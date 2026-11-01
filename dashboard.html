@@ -70,6 +70,26 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        /* CYBERPUNK CUSTOM SCROLLBARS */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #080c13;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 240, 255, 0.25);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 240, 255, 0.5);
+        }
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0, 240, 255, 0.25) #080c13;
+        }
+
         /* SCANLINE CRT EFFECT */
         body::before {
             content: " ";
@@ -428,6 +448,78 @@
             border-bottom: 1px solid var(--border-subtle);
             padding-bottom: 0.5rem;
             overflow-x: auto;
+            scrollbar-width: thin;
+        }
+
+        .nav-tabs::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        /* ECONOMY STATS DASHBOARD */
+        .economy-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .econ-stat-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            padding: 1.1rem 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .econ-stat-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-cyan);
+        }
+
+        .econ-stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--accent-biomass);
+        }
+
+        .econ-stat-card.card-amber::before {
+            background: var(--accent-amber);
+        }
+
+        .econ-stat-card.card-cyan::before {
+            background: var(--accent-cyan);
+        }
+
+        .econ-stat-label {
+            font-family: var(--font-orbitron);
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .econ-stat-value {
+            font-family: var(--font-orbitron);
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--accent-biomass);
+            letter-spacing: 0.04em;
+        }
+
+        .econ-stat-sub {
+            font-size: 0.76rem;
+            color: var(--text-secondary);
+            font-family: var(--font-tech);
         }
 
         .tab-btn {
@@ -1227,16 +1319,51 @@
         <!-- TAB 5: ECONOMY & ARTIFACTS                           -->
         <!-- ==================================================== -->
         <div id="tab-economy" class="tab-panel">
-            <div class="data-table-container">
-                <div class="table-controls">
-                    <div class="search-box">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                        <input type="text" id="filter-economy-search" placeholder="Buscar por artefacto, acción...">
+            <!-- GLOBAL ECONOMY STATS DASHBOARD -->
+            <div class="economy-stats-grid">
+                <div class="econ-stat-card">
+                    <div class="econ-stat-label">// Ingresos por Ventas</div>
+                    <div class="econ-stat-value" id="econ-total-sales-val">0 $</div>
+                    <div class="econ-stat-sub" id="econ-total-sales-sub">0 transacciones registradas</div>
+                </div>
+                <div class="econ-stat-card card-amber">
+                    <div class="econ-stat-label">// Gastos en Tienda</div>
+                    <div class="econ-stat-value" id="econ-total-spent-val" style="color: var(--accent-amber);">0 $</div>
+                    <div class="econ-stat-sub" id="econ-total-spent-sub">0 compras registradas</div>
+                </div>
+                <div class="econ-stat-card">
+                    <div class="econ-stat-label">// Venta Media / Mediana</div>
+                    <div class="econ-stat-value" id="econ-avg-sale-val">0 $</div>
+                    <div class="econ-stat-sub" id="econ-median-sale-sub">Mediana: 0 $ | Máx: 0 $</div>
+                </div>
+                <div class="econ-stat-card card-amber">
+                    <div class="econ-stat-label">// Compra Media / Mediana</div>
+                    <div class="econ-stat-value" id="econ-avg-buy-val" style="color: var(--accent-amber);">0 $</div>
+                    <div class="econ-stat-sub" id="econ-median-buy-sub">Mediana: 0 $ | Máx: 0 $</div>
+                </div>
+                <div class="econ-stat-card card-cyan">
+                    <div class="econ-stat-label">// Artefacto Más Vendido</div>
+                    <div class="econ-stat-value" id="econ-top-artifact-val" style="color: var(--accent-cyan); font-size: 1.15rem;">-</div>
+                    <div class="econ-stat-sub" id="econ-top-artifact-sub">0 unidades vendidas</div>
+                </div>
+                <div class="econ-stat-card card-cyan">
+                    <div class="econ-stat-label">// Ítem Más Comprado</div>
+                    <div class="econ-stat-value" id="econ-top-item-val" style="color: var(--accent-cyan); font-size: 1.15rem;">-</div>
+                    <div class="econ-stat-sub" id="econ-top-item-sub">0 compras</div>
+                </div>
+            </div>
+
+            <!-- ECONOMY TABLE CARD -->
+            <div class="table-card">
+                <div class="table-toolbar">
+                    <input type="text" id="search-economy" class="table-search" placeholder="Buscar por artefacto, acción, ítem...">
+                    
+                    <div class="export-actions">
+                        <button id="btn-export-economy-csv" class="btn-export" onclick="exportEconomyCSV()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            <span>Exportar CSV</span>
+                        </button>
                     </div>
-                    <button class="btn-export" onclick="exportEconomyCSV()">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                        <span>EXPORTAR CSV</span>
-                    </button>
                 </div>
 
                 <div class="data-table-wrapper">
@@ -1399,6 +1526,7 @@
             renderDeathsTable();
             renderRoundsTable();
             renderEconomyTable();
+            updateEconomyStats();
             renderCharts();
             rebuild3DHeatmap();
         }
@@ -2015,6 +2143,104 @@
             exportToCSV(economyData, `project_exodus_economy_${Date.now()}.csv`);
         }
 
+        // ==========================================
+        // GLOBAL ECONOMY STATS (Means, Medians, Tops)
+        // ==========================================
+        function updateEconomyStats() {
+            if (!economyData) return;
+
+            const sales = economyData.filter(e => (e.action_type || '').toLowerCase() === 'sale');
+            const purchases = economyData.filter(e => (e.action_type || '').toLowerCase() === 'purchase');
+
+            // 1. Sales
+            let totalSalesMoney = 0;
+            const saleAmounts = [];
+            const artifactCounts = {};
+
+            sales.forEach(s => {
+                const amt = Number(s.money_amount) || 0;
+                totalSalesMoney += amt;
+                saleAmounts.push(amt);
+                const artName = s.item_name || 'Artefacto';
+                artifactCounts[artName] = (artifactCounts[artName] || 0) + (Number(s.quantity) || 1);
+            });
+
+            // 2. Purchases
+            let totalPurchasesMoney = 0;
+            const purchaseAmounts = [];
+            const itemCounts = {};
+
+            purchases.forEach(p => {
+                const amt = Number(p.money_amount) || 0;
+                totalPurchasesMoney += amt;
+                purchaseAmounts.push(amt);
+                const itemName = p.item_name || 'Ítem';
+                itemCounts[itemName] = (itemCounts[itemName] || 0) + (Number(p.quantity) || 1);
+            });
+
+            // Helper for mean
+            const calcMean = (arr) => arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : 0;
+            // Helper for median
+            const calcMedian = (arr) => {
+                if (!arr.length) return 0;
+                const sorted = [...arr].sort((a, b) => a - b);
+                const mid = Math.floor(sorted.length / 2);
+                return sorted.length % 2 !== 0 ? sorted[mid] : Math.round((sorted[mid - 1] + sorted[mid]) / 2);
+            };
+            const calcMax = (arr) => arr.length ? Math.max(...arr) : 0;
+
+            // Top artifact sold
+            let topArtifact = '-';
+            let topArtifactCount = 0;
+            for (const [art, count] of Object.entries(artifactCounts)) {
+                if (count > topArtifactCount) {
+                    topArtifact = art;
+                    topArtifactCount = count;
+                }
+            }
+
+            // Top item purchased
+            let topItem = '-';
+            let topItemCount = 0;
+            for (const [it, count] of Object.entries(itemCounts)) {
+                if (count > topItemCount) {
+                    topItem = it;
+                    topItemCount = count;
+                }
+            }
+
+            // Update DOM
+            const elTotalSalesVal = document.getElementById('econ-total-sales-val');
+            if (elTotalSalesVal) elTotalSalesVal.textContent = `${totalSalesMoney.toLocaleString()} $`;
+            const elTotalSalesSub = document.getElementById('econ-total-sales-sub');
+            if (elTotalSalesSub) elTotalSalesSub.textContent = `${sales.length} ventas registradas`;
+
+            const elTotalSpentVal = document.getElementById('econ-total-spent-val');
+            if (elTotalSpentVal) elTotalSpentVal.textContent = `${totalPurchasesMoney.toLocaleString()} $`;
+            const elTotalSpentSub = document.getElementById('econ-total-spent-sub');
+            if (elTotalSpentSub) elTotalSpentSub.textContent = `${purchases.length} compras registradas`;
+
+            const elAvgSaleVal = document.getElementById('econ-avg-sale-val');
+            if (elAvgSaleVal) elAvgSaleVal.textContent = `${calcMean(saleAmounts).toLocaleString()} $`;
+            const elMedianSaleSub = document.getElementById('econ-median-sale-sub');
+            if (elMedianSaleSub) elMedianSaleSub.textContent = `Mediana: ${calcMedian(saleAmounts).toLocaleString()} $ | Máx: ${calcMax(saleAmounts).toLocaleString()} $`;
+
+            const elAvgBuyVal = document.getElementById('econ-avg-buy-val');
+            if (elAvgBuyVal) elAvgBuyVal.textContent = `${calcMean(purchaseAmounts).toLocaleString()} $`;
+            const elMedianBuySub = document.getElementById('econ-median-buy-sub');
+            if (elMedianBuySub) elMedianBuySub.textContent = `Mediana: ${calcMedian(purchaseAmounts).toLocaleString()} $ | Máx: ${calcMax(purchaseAmounts).toLocaleString()} $`;
+
+            const elTopArtVal = document.getElementById('econ-top-artifact-val');
+            if (elTopArtVal) elTopArtVal.textContent = topArtifact;
+            const elTopArtSub = document.getElementById('econ-top-artifact-sub');
+            if (elTopArtSub) elTopArtSub.textContent = `${topArtifactCount} unidades vendidas`;
+
+            const elTopItemVal = document.getElementById('econ-top-item-val');
+            if (elTopItemVal) elTopItemVal.textContent = topItem;
+            const elTopItemSub = document.getElementById('econ-top-item-sub');
+            if (elTopItemSub) elTopItemSub.textContent = `${topItemCount} compras`;
+        }
+
         // CSV & JSON Exporter Helper
         function downloadFile(content, fileName, mimeType) {
             const a = document.createElement('a');
@@ -2091,7 +2317,7 @@
             document.getElementById('search-rounds').addEventListener('input', (e) => {
                 renderRoundsTable(e.target.value);
             });
-            const searchEcon = document.getElementById('filter-economy-search');
+            const searchEcon = document.getElementById('search-economy');
             if (searchEcon) {
                 searchEcon.addEventListener('input', (e) => {
                     renderEconomyTable(e.target.value);
