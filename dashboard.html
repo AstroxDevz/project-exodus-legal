@@ -860,6 +860,81 @@
             box-shadow: 0 0 15px var(--accent-biomass-glow);
         }
 
+        .btn-purge-tests {
+            background: rgba(239, 68, 68, 0.08) !important;
+            border-color: rgba(239, 68, 68, 0.4) !important;
+            color: #ef4444 !important;
+        }
+
+        .btn-purge-tests:hover {
+            background: #ef4444 !important;
+            color: #ffffff !important;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.6) !important;
+        }
+
+        .btn-delete-row {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #ef4444;
+            border-radius: 4px;
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .btn-delete-row:hover {
+            background: #ef4444;
+            color: #ffffff;
+            border-color: #ef4444;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.7);
+            transform: scale(1.1);
+        }
+
+        /* TACTICAL TOAST NOTIFICATIONS */
+        #toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            pointer-events: none;
+        }
+
+        .tactical-toast {
+            background: rgba(8, 12, 19, 0.95);
+            border: 1px solid var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+            color: #ffffff;
+            font-family: var(--font-orbitron);
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            padding: 0.75rem 1.25rem;
+            border-radius: 4px;
+            pointer-events: auto;
+            animation: toastIn 0.25s ease-out forwards;
+            transition: all 0.3s ease;
+        }
+
+        .tactical-toast.danger {
+            border-color: #ef4444;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .data-table-wrapper {
             overflow-x: auto;
             border-radius: 4px;
@@ -1266,11 +1341,12 @@
                                 <th>Tiempo Ronda</th>
                                 <th>Semilla</th>
                                 <th>Usuario</th>
+                                <th style="text-align: center; width: 45px;">✕</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-deaths">
                             <tr>
-                                <td colspan="8" class="empty-state">
+                                <td colspan="9" class="empty-state">
                                     <div class="loading-spinner"></div>
                                     <div>Cargando registros telemétricos...</div>
                                 </td>
@@ -1324,6 +1400,10 @@
                     <input type="text" id="search-rounds" class="table-search" placeholder="Buscar por mapa, resultado...">
                     
                     <div class="export-actions">
+                        <button id="btn-purge-tests" class="btn-export btn-purge-tests" onclick="purgeTestRounds()" title="Eliminar registros marcados como Test o MAP_Master">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                            <span>Purgar Tests</span>
+                        </button>
                         <button id="btn-export-rounds-csv" class="btn-export">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                             <span>Exportar CSV</span>
@@ -1343,11 +1423,12 @@
                                 <th>Vivos</th>
                                 <th>Minibots</th>
                                 <th>Tiempo Real / Max</th>
+                                <th style="text-align: center; width: 45px;">✕</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-rounds">
                             <tr>
-                                <td colspan="8" class="empty-state">
+                                <td colspan="9" class="empty-state">
                                     <div class="loading-spinner"></div>
                                     <div>Cargando rondas...</div>
                                 </td>
@@ -1419,11 +1500,12 @@
                                 <th>Cantidad</th>
                                 <th>Dinero Ganado / Gastado</th>
                                 <th>ID Operativo (RGPD)</th>
+                                <th style="text-align: center; width: 45px;">✕</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-economy">
                             <tr>
-                                <td colspan="6" class="empty-state">
+                                <td colspan="7" class="empty-state">
                                     <div class="loading-spinner"></div>
                                     <div>Cargando transacciones económicas...</div>
                                 </td>
@@ -1522,8 +1604,42 @@
         });
 
         // ==========================================
-        // 2. SUPABASE DATA FETCHING
+        // 2. SUPABASE DATA FETCHING & BLACKLIST PURGE
         // ==========================================
+        const DELETED_IDS_STORAGE_KEY = 'astrox_deleted_telemetry_ids';
+
+        function getDeletedIds() {
+            try {
+                const stored = localStorage.getItem(DELETED_IDS_STORAGE_KEY);
+                return new Set(stored ? JSON.parse(stored) : []);
+            } catch (e) {
+                return new Set();
+            }
+        }
+
+        function markIdAsDeleted(id) {
+            if (!id) return;
+            const deleted = getDeletedIds();
+            deleted.add(id);
+            try {
+                localStorage.setItem(DELETED_IDS_STORAGE_KEY, JSON.stringify(Array.from(deleted)));
+            } catch (e) {}
+        }
+
+        function showToast(message, isDanger = false) {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = 'tactical-toast' + (isDanger ? ' danger' : '');
+            toast.innerHTML = `<span style="color: ${isDanger ? '#ef4444' : 'var(--accent-cyan)'}; margin-right: 0.5rem; font-weight: bold;">//</span> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(15px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
         async function fetchSupabaseTable(tableName, limit = 1000) {
             try {
                 const res = await fetch(`${SUPABASE_URL}/${tableName}?order=created_at.desc&limit=${limit}`, {
@@ -1554,12 +1670,13 @@
                 fetchSupabaseTable('telemetry_economy', 1000)
             ]);
 
-            deathsData = deaths;
-            roundsData = rounds;
-            biomassData = biomass;
-            enemiesData = enemies;
-            artifactsData = artifacts;
-            economyData = economy;
+            const deletedIds = getDeletedIds();
+            deathsData = deaths.filter(d => !deletedIds.has(d.id));
+            roundsData = rounds.filter(r => !deletedIds.has(r.id));
+            biomassData = biomass.filter(b => !deletedIds.has(b.id));
+            enemiesData = enemies.filter(en => !deletedIds.has(en.id));
+            artifactsData = artifacts.filter(a => !deletedIds.has(a.id));
+            economyData = economy.filter(e => !deletedIds.has(e.id));
 
             document.getElementById('system-status').textContent = 'Supabase Conectado';
 
@@ -2109,7 +2226,7 @@
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="empty-state">No se han encontrado registros de muertes con los filtros actuales.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" class="empty-state">No se han encontrado registros de muertes con los filtros actuales.</td></tr>`;
                 return;
             }
 
@@ -2117,6 +2234,7 @@
                 const date = d.created_at ? new Date(d.created_at).toLocaleString() : 'N/A';
                 const coords = `(${Math.round(d.pos_x)}, ${Math.round(d.pos_y)}, ${Math.round(d.pos_z)})`;
                 const user = (d.anonymous_user_id || 'Anon').substring(0, 8);
+                const safeCause = (d.cause_of_death || 'Unknown').replace(/'/g, "\\'");
                 return `
                     <tr>
                         <td>${date}</td>
@@ -2127,6 +2245,9 @@
                         <td>${Math.round(d.round_time || 0)}s</td>
                         <td>${d.map_seed || 0}</td>
                         <td style="color: var(--text-muted);">${user}</td>
+                        <td style="text-align: center;">
+                            <button class="btn-delete-row" title="Eliminar registro" onclick="deleteTelemetryRow('telemetry_deaths', '${d.id}', '${safeCause}')">✕</button>
+                        </td>
                     </tr>
                 `;
             }).join('');
@@ -2144,7 +2265,7 @@
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="empty-state">No se han registrado rondas con los filtros actuales.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" class="empty-state">No se han registrado rondas con los filtros actuales.</td></tr>`;
                 return;
             }
 
@@ -2152,6 +2273,7 @@
                 const date = r.created_at ? new Date(r.created_at).toLocaleString() : 'N/A';
                 const win = r.end_reason !== 'TeamWipe';
                 const resultColor = win ? 'var(--accent-biomass)' : 'var(--accent-danger)';
+                const safeReason = (r.end_reason || 'Ronda').replace(/'/g, "\\'");
                 return `
                     <tr>
                         <td>${date}</td>
@@ -2162,6 +2284,9 @@
                         <td>${r.alive_players_count || 0}</td>
                         <td>${r.minibot_players_count || 0}</td>
                         <td>${Math.round(r.round_time || 0)}s / ${Math.round(r.max_round_time || 0)}s</td>
+                        <td style="text-align: center;">
+                            <button class="btn-delete-row" title="Eliminar ronda" onclick="deleteTelemetryRow('telemetry_rounds', '${r.id}', '${safeReason}')">✕</button>
+                        </td>
                     </tr>
                 `;
             }).join('');
@@ -2310,7 +2435,7 @@
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No se han registrado ventas de artefactos ni compras aún.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="empty-state">No se han registrado ventas de artefactos ni compras aún.</td></tr>`;
                 return;
             }
 
@@ -2323,6 +2448,7 @@
                 const moneyColor = isSale ? 'var(--accent-biomass)' : 'var(--accent-amber)';
                 const moneyPrefix = isSale ? '+' : '-';
                 const user = (e.anonymous_user_id || 'Anon').substring(0, 8);
+                const safeItem = (e.item_name || 'Artefacto').replace(/'/g, "\\'");
 
                 return `
                     <tr>
@@ -2332,9 +2458,86 @@
                         <td>${e.quantity || 1}</td>
                         <td style="color: ${moneyColor}; font-weight: 700;">${moneyPrefix}${e.money_amount || 0} $</td>
                         <td style="color: var(--text-muted);">${user}</td>
+                        <td style="text-align: center;">
+                            <button class="btn-delete-row" title="Eliminar transacción" onclick="deleteTelemetryRow('telemetry_economy', '${e.id}', '${safeItem}')">✕</button>
+                        </td>
                     </tr>
                 `;
             }).join('');
+        }
+
+        async function deleteTelemetryRow(tableName, id, label = '') {
+            if (!id) return;
+            const displayLabel = label ? ` "${label}"` : '';
+            if (!confirm(`¿Eliminar permanentemente este registro${displayLabel} (${id.substring(0, 8)})?`)) {
+                return;
+            }
+
+            // 1. Guardar en blacklist persistente local
+            markIdAsDeleted(id);
+
+            // 2. Intentar DELETE en Supabase REST API
+            try {
+                await fetch(`${SUPABASE_URL}/${tableName}?id=eq.${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        "apikey": SUPABASE_KEY,
+                        "Authorization": `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+            } catch (err) {
+                console.warn("Supabase REST delete error:", err);
+            }
+
+            // 3. Eliminar de la memoria activa
+            if (tableName === 'telemetry_rounds') {
+                roundsData = roundsData.filter(r => r.id !== id);
+                renderRoundsTable();
+                updateRoundsStats();
+            } else if (tableName === 'telemetry_deaths') {
+                deathsData = deathsData.filter(d => d.id !== id);
+                renderDeathsTable();
+                rebuild3DHeatmap();
+            } else if (tableName === 'telemetry_economy') {
+                economyData = economyData.filter(e => e.id !== id);
+                renderEconomyTable();
+                updateEconomyStats();
+            }
+
+            // 4. Actualizar KPIs globales y gráficos
+            updateKPIs();
+            renderCharts();
+            showToast(`Registro [${id.substring(0, 8)}] purgado`);
+        }
+
+        async function purgeTestRounds() {
+            const testRounds = roundsData.filter(r => 
+                (r.end_reason || '').toLowerCase().includes('test') || 
+                (r.map_name || '').toLowerCase() === 'map_master'
+            );
+            if (testRounds.length === 0) {
+                showToast('No se encontraron rondas de prueba (Test o MAP_Master)');
+                return;
+            }
+            if (!confirm(`¿Deseas purgar ${testRounds.length} registros de prueba ('Test' o 'MAP_Master')?`)) {
+                return;
+            }
+
+            for (const r of testRounds) {
+                markIdAsDeleted(r.id);
+                fetch(`${SUPABASE_URL}/telemetry_rounds?id=eq.${r.id}`, {
+                    method: 'DELETE',
+                    headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
+                }).catch(() => {});
+            }
+
+            const testIds = new Set(testRounds.map(r => r.id));
+            roundsData = roundsData.filter(r => !testIds.has(r.id));
+            renderRoundsTable();
+            updateRoundsStats();
+            updateKPIs();
+            renderCharts();
+            showToast(`${testRounds.length} registros de prueba purgados con éxito`);
         }
 
         function exportEconomyCSV() {
@@ -2586,5 +2789,7 @@
             checkAuth();
         });
     </script>
+    <!-- TACTICAL TOAST NOTIFICATIONS -->
+    <div id="toast-container"></div>
 </body>
 </html>
