@@ -1,0 +1,2018 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AstroxDevz // Telemetry Command Center</title>
+    <meta name="description" content="Private Telemetry and Analytics Command Center for Project Exodus. Real-time 3D heatmaps, combat logs and mission analytics.">
+    <link rel="icon" type="image/png" href="assets/branding/favicon.png">
+
+    <!-- Fonts: In-Game Orbitron + Tactical Rajdhani + JetBrains Mono + Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- External Libs: Three.js for 3D Heatmap & Chart.js for Metrics -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <style>
+        :root {
+            --bg-deep: #05070a;
+            --bg-primary: #080c13;
+            --bg-secondary: #0d131f;
+            --bg-card: #121927;
+            --bg-card-hover: #172133;
+            
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #57657a;
+            
+            --accent-biomass: #c8db36;
+            --accent-biomass-glow: rgba(200, 219, 54, 0.4);
+            --accent-cyan: #00f0ff;
+            --accent-cyan-glow: rgba(0, 240, 255, 0.35);
+            --accent-danger: #ef4444;
+            --accent-amber: #f59e0b;
+            --accent-purple: #b536fe;
+
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-tactical: rgba(200, 219, 54, 0.25);
+            --border-cyan: rgba(0, 240, 255, 0.3);
+
+            --font-orbitron: 'Orbitron', sans-serif;
+            --font-tech: 'Rajdhani', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(rgba(200, 219, 54, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(200, 219, 54, 0.015) 1px, transparent 1px),
+                radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.06) 0%, transparent 60%);
+            background-size: 36px 36px, 36px 36px, 100% 100%;
+            background-attachment: fixed;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* SCANLINE CRT EFFECT */
+        body::before {
+            content: " ";
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.22) 50%);
+            background-size: 100% 4px;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0.35;
+        }
+
+        /* ==================================================== */
+        /* LOGIN MODAL OVERLAY                                  */
+        /* ==================================================== */
+        #login-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(4, 6, 10, 0.94);
+            backdrop-filter: blur(16px);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+
+        .login-box {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-tactical);
+            border-radius: 8px;
+            width: 100%;
+            max-width: 440px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(200, 219, 54, 0.1);
+            position: relative;
+            text-align: center;
+        }
+
+        .login-box::before, .login-box::after {
+            content: "";
+            position: absolute;
+            width: 14px;
+            height: 14px;
+        }
+        .login-box::before {
+            top: -1px; left: -1px;
+            border-top: 2px solid var(--accent-biomass);
+            border-left: 2px solid var(--accent-biomass);
+        }
+        .login-box::after {
+            bottom: -1px; right: -1px;
+            border-bottom: 2px solid var(--accent-cyan);
+            border-right: 2px solid var(--accent-cyan);
+        }
+
+        .login-logo {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-biomass);
+            box-shadow: 0 0 20px var(--accent-biomass-glow);
+            margin-bottom: 1.25rem;
+        }
+
+        .login-title {
+            font-family: var(--font-orbitron);
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            color: #ffffff;
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+        }
+
+        .login-subtitle {
+            font-family: var(--font-tech);
+            font-size: 0.95rem;
+            color: var(--accent-cyan);
+            letter-spacing: 0.06em;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+        }
+
+        .login-input {
+            width: 100%;
+            background: var(--bg-deep);
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            color: #ffffff;
+            font-family: var(--font-mono);
+            font-size: 0.92rem;
+            padding: 0.85rem 1rem;
+            margin-bottom: 1.25rem;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .login-input:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+        }
+
+        .btn-login {
+            width: 100%;
+            background: var(--accent-biomass);
+            color: #06070a;
+            border: none;
+            border-radius: 4px;
+            font-family: var(--font-orbitron);
+            font-size: 0.95rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            padding: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+        }
+
+        .btn-login:hover {
+            box-shadow: 0 0 25px var(--accent-biomass-glow);
+            transform: translateY(-1px);
+        }
+
+        .login-error {
+            color: var(--accent-danger);
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        /* ==================================================== */
+        /* TOP APP HEADER                                       */
+        /* ==================================================== */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(8, 12, 19, 0.95);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .header-inner {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .brand-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-biomass);
+            box-shadow: 0 0 12px var(--accent-biomass-glow);
+        }
+
+        .brand-titles {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-title {
+            font-family: var(--font-orbitron);
+            font-size: 0.95rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+
+        .brand-tag {
+            font-family: var(--font-tech);
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: rgba(200, 219, 54, 0.08);
+            border: 1px solid var(--border-tactical);
+            padding: 0.35rem 0.75rem;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: var(--accent-biomass);
+            text-transform: uppercase;
+        }
+
+        .pulse-led {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent-biomass);
+            box-shadow: 0 0 8px var(--accent-biomass);
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        .filter-select {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            font-family: var(--font-tech);
+            font-size: 0.88rem;
+            font-weight: 600;
+            padding: 0.45rem 0.85rem;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-select:hover, .filter-select:focus {
+            border-color: var(--accent-cyan);
+        }
+
+        .btn-action {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-family: var(--font-tech);
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 0.45rem 0.85rem;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action:hover {
+            color: #ffffff;
+            border-color: var(--accent-cyan);
+            background: rgba(0, 240, 255, 0.08);
+        }
+
+        .btn-action.active {
+            background: var(--accent-biomass);
+            color: #06070a;
+            border-color: var(--accent-biomass);
+            font-weight: 800;
+        }
+
+        /* ==================================================== */
+        /* MAIN DASHBOARD CONTAINER                             */
+        /* ==================================================== */
+        main {
+            max-width: 1500px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* KPI STATS ROW */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .kpi-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            padding: 1.25rem 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--border-tactical);
+        }
+
+        .kpi-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-biomass), transparent);
+            opacity: 0.6;
+        }
+
+        .kpi-label {
+            font-family: var(--font-mono);
+            font-size: 0.74rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .kpi-value {
+            font-family: var(--font-orbitron);
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.2;
+        }
+
+        .kpi-sub {
+            font-family: var(--font-tech);
+            font-size: 0.82rem;
+            color: var(--accent-cyan);
+            margin-top: 0.35rem;
+        }
+
+        /* TABS NAVIGATION */
+        .nav-tabs {
+            display: flex;
+            gap: 0.6rem;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 0.5rem;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-family: var(--font-orbitron);
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            padding: 0.65rem 1.25rem;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--accent-cyan);
+            color: #ffffff;
+            background: rgba(0, 240, 255, 0.06);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(200, 219, 54, 0.15), rgba(0, 240, 255, 0.12));
+            border-color: var(--accent-biomass);
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(200, 219, 54, 0.15);
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==================================================== */
+        /* TAB 1: 3D HEATMAP VIEWER                             */
+        /* ==================================================== */
+        .heatmap-container {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 1.25rem;
+            height: 680px;
+        }
+
+        @media (max-width: 1024px) {
+            .heatmap-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        .viewport-card {
+            background: #030508;
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+            min-height: 520px;
+        }
+
+        #threejs-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            outline: none;
+        }
+
+        .viewport-hud {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            pointer-events: none;
+            background: rgba(6, 9, 15, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-tactical);
+            border-radius: 4px;
+            padding: 0.6rem 0.9rem;
+            font-family: var(--font-mono);
+            font-size: 0.76rem;
+            color: var(--accent-biomass);
+        }
+
+        .hud-crosshair {
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            pointer-events: none;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        /* 3D Tooltip Hover Card */
+        #point-tooltip {
+            position: absolute;
+            display: none;
+            pointer-events: none;
+            background: rgba(8, 12, 19, 0.92);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--accent-cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+            border-radius: 4px;
+            padding: 0.75rem 1rem;
+            z-index: 50;
+            font-family: var(--font-mono);
+            font-size: 0.76rem;
+            color: #ffffff;
+            min-width: 200px;
+            transform: translate(-50%, -120%);
+        }
+
+        .tooltip-title {
+            color: var(--accent-cyan);
+            font-weight: 700;
+            font-family: var(--font-orbitron);
+            font-size: 0.8rem;
+            margin-bottom: 0.35rem;
+            text-transform: uppercase;
+        }
+
+        /* 3D SIDEBAR CONTROLS */
+        .controls-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            overflow-y: auto;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .control-label {
+            font-family: var(--font-tech);
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .control-label span {
+            color: var(--accent-cyan);
+        }
+
+        .range-slider {
+            width: 100%;
+            accent-color: var(--accent-biomass);
+            cursor: pointer;
+        }
+
+        .legend-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            padding: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-family: var(--font-mono);
+            font-size: 0.74rem;
+            color: var(--text-secondary);
+        }
+
+        .legend-color {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* ==================================================== */
+        /* TAB 2 & 3: CHARTS & DATA TABLES                      */
+        /* ==================================================== */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+            gap: 1.25rem;
+        }
+
+        @media (max-width: 640px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-box {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .chart-box h3 {
+            font-family: var(--font-orbitron);
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1.25rem;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chart-box h3::before {
+            content: "//";
+            color: var(--accent-biomass);
+            font-family: var(--font-mono);
+        }
+
+        /* DATA TABLES */
+        .table-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .table-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .table-search {
+            background: var(--bg-deep);
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            color: #ffffff;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            padding: 0.45rem 0.85rem;
+            width: 280px;
+            outline: none;
+        }
+
+        .table-search:focus {
+            border-color: var(--accent-cyan);
+        }
+
+        .export-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .btn-export {
+            background: rgba(200, 219, 54, 0.08);
+            border: 1px solid var(--border-tactical);
+            color: var(--accent-biomass);
+            font-family: var(--font-orbitron);
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-export:hover {
+            background: var(--accent-biomass);
+            color: #06070a;
+            box-shadow: 0 0 15px var(--accent-biomass-glow);
+        }
+
+        .data-table-wrapper {
+            overflow-x: auto;
+            border-radius: 4px;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-deep);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.86rem;
+            text-align: left;
+        }
+
+        th {
+            background: var(--bg-secondary);
+            color: var(--accent-cyan);
+            font-family: var(--font-orbitron);
+            font-size: 0.74rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        tr:hover td {
+            background: rgba(200, 219, 54, 0.02);
+            color: #ffffff;
+        }
+
+        .tag-cause {
+            display: inline-block;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            padding: 0.15rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.75rem;
+        }
+
+        .tag-map {
+            display: inline-block;
+            background: rgba(0, 240, 255, 0.08);
+            border: 1px solid rgba(0, 240, 255, 0.25);
+            color: var(--accent-cyan);
+            padding: 0.15rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.75rem;
+        }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid var(--border-subtle);
+            background: var(--bg-primary);
+            padding: 1.25rem 1.5rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            margin-top: auto;
+        }
+
+        /* EMPTY STATE / LOADING */
+        .empty-state {
+            padding: 4rem 1.5rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(200, 219, 54, 0.2);
+            border-top-color: var(--accent-biomass);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 0.75rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================================================== -->
+    <!-- LOGIN SCREEN OVERLAY                                 -->
+    <!-- ==================================================== -->
+    <div id="login-overlay">
+        <div class="login-box">
+            <img src="assets/branding/profile.jpg" alt="AstroxDevz Logo" class="login-logo">
+            <h1 class="login-title">Command Center</h1>
+            <p class="login-subtitle">Project Exodus // Telemetry Access</p>
+            
+            <input type="password" id="input-password" class="login-input" placeholder="Introduce la clave de acceso..." autocomplete="current-password">
+            <button id="btn-login" class="btn-login">Acceder al Sistema</button>
+            <div id="login-error-msg" class="login-error">Clave de acceso incorrecta</div>
+            
+            <p style="font-size: 0.74rem; color: var(--text-muted); margin-top: 1.5rem; font-family: var(--font-mono);">
+                AstroxStudio Telemetry Security Protocol
+            </p>
+        </div>
+    </div>
+
+    <!-- ==================================================== -->
+    <!-- TOP APP BAR                                          -->
+    <!-- ==================================================== -->
+    <header>
+        <div class="header-inner">
+            <a href="index.html" class="brand-section" title="Volver a la Web Principal">
+                <img src="assets/branding/profile.jpg" alt="AstroxDevz Logo" class="brand-avatar">
+                <div class="brand-titles">
+                    <span class="brand-title">AstroxDevz Telemetry</span>
+                    <span class="brand-tag">Project Exodus Live Operations</span>
+                </div>
+            </a>
+
+            <div class="header-controls">
+                <div class="status-badge">
+                    <div class="pulse-led"></div>
+                    <span id="system-status">Supabase Online</span>
+                </div>
+
+                <select id="time-filter" class="filter-select">
+                    <option value="24h">Últimas 24 Horas</option>
+                    <option value="7d" selected>Últimos 7 Días</option>
+                    <option value="30d">Últimos 30 Días</option>
+                    <option value="all">Todo el Historial</option>
+                </select>
+
+                <select id="map-filter" class="filter-select">
+                    <option value="all">Todos los Mapas</option>
+                </select>
+
+                <button id="btn-refresh" class="btn-action" title="Recargar datos">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                    <span>Actualizar</span>
+                </button>
+
+                <button id="btn-logout" class="btn-action" title="Cerrar Sesión">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+                    <span>Salir</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================================================== -->
+    <!-- MAIN CONTENT                                         -->
+    <!-- ==================================================== -->
+    <main>
+
+        <!-- KPI SUMMARY CARDS -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-label">
+                    <span>Muertes Totales</span>
+                    <span>💀</span>
+                </div>
+                <div class="kpi-value" id="kpi-deaths">0</div>
+                <div class="kpi-sub" id="kpi-deaths-sub">0 en Minibot</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-label">
+                    <span>Rondas Jugadas</span>
+                    <span>🎮</span>
+                </div>
+                <div class="kpi-value" id="kpi-rounds">0</div>
+                <div class="kpi-sub" id="kpi-rounds-sub">0% de éxito</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-label">
+                    <span>Biomasa Comprimida</span>
+                    <span>☣️</span>
+                </div>
+                <div class="kpi-value" id="kpi-biomass">0</div>
+                <div class="kpi-sub" id="kpi-biomass-sub">Para cuota de El Arca</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-label">
+                    <span>Enemigos Comprimidos</span>
+                    <span>👾</span>
+                </div>
+                <div class="kpi-value" id="kpi-enemies">0</div>
+                <div class="kpi-sub" id="kpi-artifacts-sub">0 artefactos</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-label">
+                    <span>Operativos Únicos</span>
+                    <span>👤</span>
+                </div>
+                <div class="kpi-value" id="kpi-players">0</div>
+                <div class="kpi-sub">Usuarios anónimos RGPD</div>
+            </div>
+        </div>
+
+        <!-- TAB NAVIGATION -->
+        <div class="nav-tabs">
+            <button class="tab-btn active" data-tab="tab-heatmap">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                <span>01 // Mapa de Calor 3D</span>
+            </button>
+            <button class="tab-btn" data-tab="tab-analytics">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                <span>02 // Métricas y Gráficas</span>
+            </button>
+            <button class="tab-btn" data-tab="tab-deaths">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                <span>03 // Registro de Muertes</span>
+            </button>
+            <button class="tab-btn" data-tab="tab-rounds">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <span>04 // Rondas y Misiones</span>
+            </button>
+        </div>
+
+        <!-- ==================================================== -->
+        <!-- TAB 1: 3D HEATMAP                                    -->
+        <!-- ==================================================== -->
+        <div id="tab-heatmap" class="tab-panel active">
+            <div class="heatmap-container">
+                <div class="viewport-card">
+                    <canvas id="threejs-canvas"></canvas>
+                    
+                    <div class="viewport-hud">
+                        <span id="hud-point-count">0 PUNTOS 3D CARGADOS</span>
+                        <span style="margin: 0 0.4rem;">•</span>
+                        <span id="hud-cam-mode">ORBITAL VIEW</span>
+                    </div>
+
+                    <div class="hud-crosshair">
+                        <span>Click Izq: Rotar • Click Der: Desplazar • Rueda: Zoom • Pasa el ratón por los puntos</span>
+                    </div>
+
+                    <!-- Floating Tooltip -->
+                    <div id="point-tooltip">
+                        <div class="tooltip-title" id="tt-cause">Causa de Muerte</div>
+                        <div id="tt-pos">X: 0 | Y: 0 | Z: 0</div>
+                        <div id="tt-status">Estado: Vivo</div>
+                        <div id="tt-map">Mapa: Unknown</div>
+                        <div id="tt-time" style="color: var(--text-muted); margin-top: 0.25rem;">00:00</div>
+                    </div>
+                </div>
+
+                <!-- CONTROLS SIDEBAR -->
+                <div class="controls-card">
+                    <div style="font-family: var(--font-orbitron); font-size: 0.9rem; font-weight: 700; color: #ffffff; text-transform: uppercase;">
+                        Controles 3D
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">Modo Visual</label>
+                        <select id="ctl-color-mode" class="filter-select">
+                            <option value="cause">Color por Causa de Muerte</option>
+                            <option value="status">Color por Estado (Vivo / Minibot)</option>
+                            <option value="density">Modo Calor / Densidad</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">Filtrar por Causa</label>
+                        <select id="ctl-cause-filter" class="filter-select">
+                            <option value="all">Todas las causas</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            <span>Tamaño de Esferas</span>
+                            <span id="lbl-point-size">1.0x</span>
+                        </label>
+                        <input type="range" id="ctl-point-size" class="range-slider" min="0.3" max="3.0" step="0.1" value="1.0">
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            <span>Escala Vertical (Z)</span>
+                            <span id="lbl-z-scale">1.0x</span>
+                        </label>
+                        <input type="range" id="ctl-z-scale" class="range-slider" min="0.2" max="2.5" step="0.1" value="1.0">
+                    </div>
+
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button id="btn-cam-top" class="btn-action" style="flex: 1; justify-content: center;">Cenital (2D)</button>
+                        <button id="btn-cam-reset" class="btn-action" style="flex: 1; justify-content: center;">Perspectiva</button>
+                    </div>
+
+                    <div class="legend-box">
+                        <div style="font-family: var(--font-orbitron); font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.2rem;">
+                            Leyenda de Marcadores
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #ef4444; box-shadow: 0 0 6px #ef4444;"></div>
+                            <span>Trampas / Daño Entorno</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #00f0ff; box-shadow: 0 0 6px #00f0ff;"></div>
+                            <span>Enemigos / Especímenes</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #f59e0b; box-shadow: 0 0 6px #f59e0b;"></div>
+                            <span>Caídas / Vacío</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #b536fe; box-shadow: 0 0 6px #b536fe;"></div>
+                            <span>Muerte en Minibot</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #c8db36; box-shadow: 0 0 6px #c8db36;"></div>
+                            <span>Otras Causas</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================================================== -->
+        <!-- TAB 2: ANALYTICS & CHARTS                            -->
+        <!-- ==================================================== -->
+        <div id="tab-analytics" class="tab-panel">
+            <div class="charts-grid">
+                <div class="chart-box">
+                    <h3>Evolución de Muertes en el Tiempo</h3>
+                    <canvas id="chart-timeline" height="240"></canvas>
+                </div>
+
+                <div class="chart-box">
+                    <h3>Causas de Muerte Más Letales</h3>
+                    <canvas id="chart-causes" height="240"></canvas>
+                </div>
+
+                <div class="chart-box">
+                    <h3>Muertes por Mapa</h3>
+                    <canvas id="chart-maps" height="240"></canvas>
+                </div>
+
+                <div class="chart-box">
+                    <h3>Resultado de Rondas</h3>
+                    <canvas id="chart-rounds" height="240"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================================================== -->
+        <!-- TAB 3: DEATHS TABLE & EXPORT                         -->
+        <!-- ==================================================== -->
+        <div id="tab-deaths" class="tab-panel">
+            <div class="table-card">
+                <div class="table-toolbar">
+                    <input type="text" id="search-deaths" class="table-search" placeholder="Buscar por causa, mapa, estado...">
+                    
+                    <div class="export-actions">
+                        <button id="btn-export-deaths-csv" class="btn-export">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            <span>Exportar CSV</span>
+                        </button>
+                        <button id="btn-export-deaths-json" class="btn-export">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            <span>Exportar JSON</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="data-table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha / Hora</th>
+                                <th>Mapa</th>
+                                <th>Causa</th>
+                                <th>Estado</th>
+                                <th>Posición (X, Y, Z)</th>
+                                <th>Tiempo Ronda</th>
+                                <th>Semilla</th>
+                                <th>Usuario</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-deaths">
+                            <tr>
+                                <td colspan="8" class="empty-state">
+                                    <div class="loading-spinner"></div>
+                                    <div>Cargando registros telemétricos...</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================================================== -->
+        <!-- TAB 4: ROUNDS TABLE                                  -->
+        <!-- ==================================================== -->
+        <div id="tab-rounds" class="tab-panel">
+            <div class="table-card">
+                <div class="table-toolbar">
+                    <input type="text" id="search-rounds" class="table-search" placeholder="Buscar por mapa, resultado...">
+                    
+                    <div class="export-actions">
+                        <button id="btn-export-rounds-csv" class="btn-export">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            <span>Exportar CSV</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="data-table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha / Hora</th>
+                                <th>Mapa</th>
+                                <th>Resultado</th>
+                                <th>Biomasa Entregada</th>
+                                <th>Dinero</th>
+                                <th>Vivos</th>
+                                <th>Minibots</th>
+                                <th>Tiempo Real / Max</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-rounds">
+                            <tr>
+                                <td colspan="8" class="empty-state">
+                                    <div class="loading-spinner"></div>
+                                    <div>Cargando rondas...</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>ASTROXDEVZ // PROJECT EXODUS COMMAND SUITE &bull; SUPABASE DIRECT TELEMETRY PIPELINE</p>
+    </footer>
+
+    <!-- ==================================================== -->
+    <!-- INTERACTIVE JAVASCRIPT SYSTEM                        -->
+    <!-- ==================================================== -->
+    <script>
+        // CONFIGURATION
+        const SUPABASE_URL = "https://rzmbmuwturlvygvtqpqc.supabase.co/rest/v1";
+        const SUPABASE_KEY = "sb_publishable_7s2bBldV5c0afmFJv5wvkg_ajFGvDLK";
+        const MASTER_PASSWORD = "astrox"; // Contraseña de acceso por defecto
+
+        // CACHED TELEMETRY DATA
+        let deathsData = [];
+        let roundsData = [];
+        let biomassData = [];
+        let enemiesData = [];
+        let artifactsData = [];
+
+        // CHARTS INSTANCES
+        let chartTimelineInstance = null;
+        let chartCausesInstance = null;
+        let chartMapsInstance = null;
+        let chartRoundsInstance = null;
+
+        // THREE.JS SCENE VARIABLES
+        let scene, camera, renderer, controls;
+        let pointCloudGroup = null;
+        let deathPointsMeta = [];
+        let raycaster, mouse;
+        let hoveredIndex = -1;
+        let zScaleMultiplier = 1.0;
+        let pointSizeMultiplier = 1.0;
+        let currentMapFilter = "all";
+        let currentCauseFilter = "all";
+        let currentColorMode = "cause";
+
+        // ==========================================
+        // 1. AUTHENTICATION & LOGIN GATE
+        // ==========================================
+        const loginOverlay = document.getElementById('login-overlay');
+        const inputPassword = document.getElementById('input-password');
+        const btnLogin = document.getElementById('btn-login');
+        const loginErrorMsg = document.getElementById('login-error-msg');
+        const btnLogout = document.getElementById('btn-logout');
+
+        function checkAuth() {
+            const isAuth = sessionStorage.getItem('astrox_auth') === 'true';
+            if (isAuth) {
+                loginOverlay.style.display = 'none';
+                initApplication();
+            } else {
+                loginOverlay.style.display = 'flex';
+                inputPassword.focus();
+            }
+        }
+
+        function handleLogin() {
+            const val = inputPassword.value.trim().toLowerCase();
+            // Acceso con contraseña maestra
+            if (val === MASTER_PASSWORD || val === "astrox2026" || val === "exodus") {
+                sessionStorage.setItem('astrox_auth', 'true');
+                loginOverlay.style.display = 'none';
+                loginErrorMsg.style.display = 'none';
+                initApplication();
+            } else {
+                loginErrorMsg.style.display = 'block';
+                inputPassword.value = '';
+                inputPassword.focus();
+            }
+        }
+
+        btnLogin.addEventListener('click', handleLogin);
+        inputPassword.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+
+        btnLogout.addEventListener('click', () => {
+            sessionStorage.removeItem('astrox_auth');
+            location.reload();
+        });
+
+        // ==========================================
+        // 2. SUPABASE DATA FETCHING
+        // ==========================================
+        async function fetchSupabaseTable(tableName, limit = 1000) {
+            try {
+                const res = await fetch(`${SUPABASE_URL}/${tableName}?order=created_at.desc&limit=${limit}`, {
+                    headers: {
+                        "apikey": SUPABASE_KEY,
+                        "Authorization": `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+                if (!res.ok) {
+                    throw new Error(`HTTP error ${res.status}`);
+                }
+                return await res.json();
+            } catch (err) {
+                console.warn(`Error fetching ${tableName}:`, err);
+                return [];
+            }
+        }
+
+        async function loadAllTelemetryData() {
+            document.getElementById('system-status').textContent = 'Sincronizando...';
+
+            const [deaths, rounds, biomass, enemies, artifacts] = await Promise.all([
+                fetchSupabaseTable('telemetry_deaths', 2000),
+                fetchSupabaseTable('telemetry_rounds', 1000),
+                fetchSupabaseTable('telemetry_biomass', 500),
+                fetchSupabaseTable('telemetry_enemies', 500),
+                fetchSupabaseTable('telemetry_artifacts', 500)
+            ]);
+
+            deathsData = deaths;
+            roundsData = rounds;
+            biomassData = biomass;
+            enemiesData = enemies;
+            artifactsData = artifacts;
+
+            document.getElementById('system-status').textContent = 'Supabase Conectado';
+
+            populateMapDropdown();
+            populateCauseDropdown();
+            updateKPIs();
+            renderDeathsTable();
+            renderRoundsTable();
+            renderCharts();
+            rebuild3DHeatmap();
+        }
+
+        // ==========================================
+        // 3. KPI METRICS CALCULATION
+        // ==========================================
+        function updateKPIs() {
+            // Deaths
+            document.getElementById('kpi-deaths').textContent = deathsData.length.toLocaleString();
+            const minibots = deathsData.filter(d => (d.player_status || '').toLowerCase() === 'minibot').length;
+            document.getElementById('kpi-deaths-sub').textContent = `${minibots} en forma Minibot`;
+
+            // Rounds
+            document.getElementById('kpi-rounds').textContent = roundsData.length.toLocaleString();
+            if (roundsData.length > 0) {
+                const wins = roundsData.filter(r => r.end_reason !== 'TeamWipe').length;
+                const winPct = Math.round((wins / roundsData.length) * 100);
+                document.getElementById('kpi-rounds-sub').textContent = `${winPct}% evacuaciones con éxito`;
+            } else {
+                document.getElementById('kpi-rounds-sub').textContent = '0% evacuaciones';
+            }
+
+            // Biomass
+            let totalBio = 0;
+            roundsData.forEach(r => totalBio += (r.biomass_collected || 0));
+            biomassData.forEach(b => totalBio += (b.biomass_delivered || 0));
+            document.getElementById('kpi-biomass').textContent = totalBio.toLocaleString();
+
+            // Enemies & Artifacts
+            let totalEnemies = 0;
+            enemiesData.forEach(e => totalEnemies += (e.quantity || 1));
+            let totalArt = 0;
+            artifactsData.forEach(a => totalArt += (a.quantity || 1));
+            document.getElementById('kpi-enemies').textContent = totalEnemies.toLocaleString();
+            document.getElementById('kpi-artifacts-sub').textContent = `${totalArt} artefactos extraídos`;
+
+            // Unique Players
+            const userSet = new Set();
+            deathsData.forEach(d => d.anonymous_user_id && userSet.add(d.anonymous_user_id));
+            roundsData.forEach(r => r.anonymous_user_id && userSet.add(r.anonymous_user_id));
+            document.getElementById('kpi-players').textContent = userSet.size.toLocaleString();
+        }
+
+        // Populate dynamic filters
+        function populateMapDropdown() {
+            const mapSelect = document.getElementById('map-filter');
+            const maps = new Set();
+            deathsData.forEach(d => d.map_name && maps.add(d.map_name));
+            roundsData.forEach(r => r.map_name && maps.add(r.map_name));
+
+            const curVal = mapSelect.value;
+            mapSelect.innerHTML = '<option value="all">Todos los Mapas</option>';
+            maps.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m;
+                opt.textContent = m;
+                mapSelect.appendChild(opt);
+            });
+            mapSelect.value = maps.has(curVal) ? curVal : 'all';
+        }
+
+        function populateCauseDropdown() {
+            const causeSelect = document.getElementById('ctl-cause-filter');
+            const causes = new Set();
+            deathsData.forEach(d => d.cause_of_death && causes.add(d.cause_of_death));
+
+            causeSelect.innerHTML = '<option value="all">Todas las causas</option>';
+            causes.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.textContent = c;
+                causeSelect.appendChild(opt);
+            });
+        }
+
+        // ==========================================
+        // 4. THREE.JS 3D HEATMAP ENGINE
+        // ==========================================
+        function initThreeJS() {
+            const canvas = document.getElementById('threejs-canvas');
+            const container = canvas.parentElement;
+
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x030508, 0.0015);
+
+            camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 1, 10000);
+            camera.position.set(0, 450, 650);
+
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setClearColor(0x030508, 1);
+
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.maxDistance = 2500;
+            controls.minDistance = 20;
+            controls.target.set(0, 0, 0);
+
+            // Sci-Fi Tactical Coordinate Grid Floor
+            const gridHelper = new THREE.GridHelper(1000, 40, 0x00f0ff, 0x131d2e);
+            gridHelper.position.y = 0;
+            scene.add(gridHelper);
+
+            // Subtle Axes Helper
+            const axesHelper = new THREE.AxesHelper(150);
+            scene.add(axesHelper);
+
+            // Ambient + Directional Lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+            scene.add(ambientLight);
+
+            const dirLight = new THREE.DirectionalLight(0xc8db36, 1.2);
+            dirLight.position.set(100, 300, 100);
+            scene.add(dirLight);
+
+            raycaster = new THREE.Raycaster();
+            raycaster.params.Points.threshold = 12;
+            mouse = new THREE.Vector2(-999, -999);
+
+            // Event Listeners
+            window.addEventListener('resize', onWindowResize);
+            canvas.addEventListener('mousemove', onMouseMove);
+            canvas.addEventListener('mouseleave', () => {
+                document.getElementById('point-tooltip').style.display = 'none';
+                mouse.set(-999, -999);
+            });
+
+            animate();
+        }
+
+        function onWindowResize() {
+            const canvas = document.getElementById('threejs-canvas');
+            const container = canvas.parentElement;
+            if (!container || !renderer) return;
+
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        function onMouseMove(event) {
+            const canvas = document.getElementById('threejs-canvas');
+            const rect = canvas.getBoundingClientRect();
+            mouse.x = ((event.clientX - rect.left) / canvas.clientWidth) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / canvas.clientHeight) * 2 + 1;
+
+            // Tooltip position
+            const tooltip = document.getElementById('point-tooltip');
+            tooltip.style.left = `${event.clientX - rect.left}px`;
+            tooltip.style.top = `${event.clientY - rect.top}px`;
+        }
+
+        // Color coding logic for death points
+        function getPointColor(item, mode) {
+            if (mode === 'status') {
+                return (item.player_status || '').toLowerCase() === 'minibot' 
+                    ? new THREE.Color(0xb536fe) 
+                    : new THREE.Color(0x00f0ff);
+            }
+
+            const cause = (item.cause_of_death || '').toLowerCase();
+            if (cause.includes('trap') || cause.includes('spike') || cause.includes('laser') || cause.includes('hazard')) {
+                return new THREE.Color(0xef4444); // Red
+            }
+            if (cause.includes('fall') || cause.includes('pit') || cause.includes('void')) {
+                return new THREE.Color(0xf59e0b); // Amber
+            }
+            if (cause.includes('monster') || cause.includes('sonic') || cause.includes('stalker') || cause.includes('crawler') || cause.includes('enemy')) {
+                return new THREE.Color(0x00f0ff); // Cyan
+            }
+            if ((item.player_status || '').toLowerCase() === 'minibot') {
+                return new THREE.Color(0xb536fe); // Purple
+            }
+            return new THREE.Color(0xc8db36); // Biomass Green
+        }
+
+        function rebuild3DHeatmap() {
+            if (!scene) return;
+
+            if (pointCloudGroup) {
+                scene.remove(pointCloudGroup);
+                pointCloudGroup = null;
+            }
+
+            deathPointsMeta = [];
+
+            // Filter points
+            const filtered = deathsData.filter(d => {
+                if (currentMapFilter !== 'all' && d.map_name !== currentMapFilter) return false;
+                if (currentCauseFilter !== 'all' && d.cause_of_death !== currentCauseFilter) return false;
+                return true;
+            });
+
+            document.getElementById('hud-point-count').textContent = `${filtered.length} PUNTOS 3D CARGADOS`;
+
+            if (filtered.length === 0) return;
+
+            // Compute center of bounding box to center coords
+            let minX = Infinity, maxX = -Infinity;
+            let minY = Infinity, maxY = -Infinity;
+            let minZ = Infinity, maxZ = -Infinity;
+
+            filtered.forEach(d => {
+                const x = d.pos_x || 0;
+                const y = d.pos_y || 0;
+                const z = d.pos_z || 0;
+                if (x < minX) minX = x; if (x > maxX) maxX = x;
+                if (y < minY) minY = y; if (y > maxY) maxY = y;
+                if (z < minZ) minZ = z; if (z > maxZ) maxZ = z;
+            });
+
+            const centerX = (minX + maxX) / 2;
+            const centerY = (minY + maxY) / 2;
+            const centerZ = (minZ + maxZ) / 2;
+
+            const spanX = Math.max(maxX - minX, 100);
+            const spanY = Math.max(maxY - minY, 100);
+            const maxSpan = Math.max(spanX, spanY, 500);
+            const scale = 700 / maxSpan; // Fit comfortably in 700 units grid
+
+            pointCloudGroup = new THREE.Group();
+
+            const geometry = new THREE.BufferGeometry();
+            const positions = [];
+            const colors = [];
+
+            filtered.forEach((item, index) => {
+                // Coordinate mapping from Unreal Engine to Three.js:
+                // Unreal: X=Forward, Y=Right, Z=Up
+                // Three.js: X=Right, Y=Up, Z=Depth
+                const ueX = item.pos_x || 0;
+                const ueY = item.pos_y || 0;
+                const ueZ = item.pos_z || 0;
+
+                const posX = (ueY - centerY) * scale;
+                const posY = (ueZ - centerZ) * scale * zScaleMultiplier;
+                const posZ = -(ueX - centerX) * scale;
+
+                positions.push(posX, Math.max(posY, 2), posZ);
+
+                const c = getPointColor(item, currentColorMode);
+                colors.push(c.r, c.g, c.b);
+
+                deathPointsMeta.push(item);
+            });
+
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+            // Custom circular particle texture
+            const canvasTexture = createCircleTexture();
+            const material = new THREE.PointsMaterial({
+                size: 16 * pointSizeMultiplier,
+                vertexColors: true,
+                map: canvasTexture,
+                transparent: true,
+                alphaTest: 0.1,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+
+            const points = new THREE.Points(geometry, material);
+            pointCloudGroup.add(points);
+            scene.add(pointCloudGroup);
+        }
+
+        function createCircleTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 64;
+            canvas.height = 64;
+            const ctx = canvas.getContext('2d');
+
+            const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 30);
+            gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+            gradient.addColorStop(0.3, 'rgba(255, 255, 255, 0.8)');
+            gradient.addColorStop(0.6, 'rgba(255, 255, 255, 0.3)');
+            gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 64, 64);
+
+            const texture = new THREE.Texture(canvas);
+            texture.needsUpdate = true;
+            return texture;
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+
+            // Raycasting hover check
+            if (pointCloudGroup && pointCloudGroup.children[0]) {
+                raycaster.setFromCamera(mouse, camera);
+                const intersects = raycaster.intersectObject(pointCloudGroup.children[0]);
+                const tooltip = document.getElementById('point-tooltip');
+
+                if (intersects.length > 0) {
+                    const idx = intersects[0].index;
+                    if (idx < deathPointsMeta.length) {
+                        const item = deathPointsMeta[idx];
+                        document.getElementById('tt-cause').textContent = item.cause_of_death || 'Unknown';
+                        document.getElementById('tt-pos').textContent = `X: ${Math.round(item.pos_x)} | Y: ${Math.round(item.pos_y)} | Z: ${Math.round(item.pos_z)}`;
+                        document.getElementById('tt-status').textContent = `Estado: ${item.player_status || 'Alive'}`;
+                        document.getElementById('tt-map').textContent = `Mapa: ${item.map_name || 'N/A'} (Seed: ${item.map_seed || 0})`;
+                        
+                        const date = item.created_at ? new Date(item.created_at).toLocaleString() : '';
+                        document.getElementById('tt-time').textContent = `${Math.round(item.round_time || 0)}s de ronda • ${date}`;
+
+                        tooltip.style.display = 'block';
+                    }
+                } else {
+                    tooltip.style.display = 'none';
+                }
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // ==========================================
+        // 5. CHARTS & ANALYTICS (CHART.JS)
+        // ==========================================
+        function renderCharts() {
+            renderTimelineChart();
+            renderCausesChart();
+            renderMapsChart();
+            renderRoundsChart();
+        }
+
+        function renderTimelineChart() {
+            const ctx = document.getElementById('chart-timeline');
+            if (!ctx) return;
+
+            // Group deaths by date (YYYY-MM-DD)
+            const countsByDate = {};
+            deathsData.forEach(d => {
+                if (!d.created_at) return;
+                const day = d.created_at.split('T')[0];
+                countsByDate[day] = (countsByDate[day] || 0) + 1;
+            });
+
+            const labels = Object.keys(countsByDate).sort();
+            const data = labels.map(l => countsByDate[l]);
+
+            if (chartTimelineInstance) chartTimelineInstance.destroy();
+
+            chartTimelineInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels.length ? labels : ['Sin datos'],
+                    datasets: [{
+                        label: 'Bajas / Muertes',
+                        data: data.length ? data : [0],
+                        borderColor: '#00f0ff',
+                        backgroundColor: 'rgba(0, 240, 255, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.35,
+                        fill: true,
+                        pointBackgroundColor: '#c8db36'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#64748b' } },
+                        y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#64748b' }, beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        function renderCausesChart() {
+            const ctx = document.getElementById('chart-causes');
+            if (!ctx) return;
+
+            const counts = {};
+            deathsData.forEach(d => {
+                const c = d.cause_of_death || 'Desconocido';
+                counts[c] = (counts[c] || 0) + 1;
+            });
+
+            const labels = Object.keys(counts);
+            const data = labels.map(l => counts[l]);
+
+            if (chartCausesInstance) chartCausesInstance.destroy();
+
+            chartCausesInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels.length ? labels : ['Sin datos'],
+                    datasets: [{
+                        data: data.length ? data : [1],
+                        backgroundColor: ['#ef4444', '#00f0ff', '#f59e0b', '#b536fe', '#c8db36', '#3b82f6'],
+                        borderColor: '#080c13',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { color: '#94a3b8' } } }
+                }
+            });
+        }
+
+        function renderMapsChart() {
+            const ctx = document.getElementById('chart-maps');
+            if (!ctx) return;
+
+            const counts = {};
+            deathsData.forEach(d => {
+                const m = d.map_name || 'Desconocido';
+                counts[m] = (counts[m] || 0) + 1;
+            });
+
+            const labels = Object.keys(counts);
+            const data = labels.map(l => counts[l]);
+
+            if (chartMapsInstance) chartMapsInstance.destroy();
+
+            chartMapsInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels.length ? labels : ['Sin datos'],
+                    datasets: [{
+                        label: 'Muertes por Mapa',
+                        data: data.length ? data : [0],
+                        backgroundColor: 'rgba(200, 219, 54, 0.4)',
+                        borderColor: '#c8db36',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#64748b' } },
+                        y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#64748b' }, beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        function renderRoundsChart() {
+            const ctx = document.getElementById('chart-rounds');
+            if (!ctx) return;
+
+            const reasons = { "TeamWipe": 0, "TimeExpired": 0, "StrategicDecision": 0, "Other": 0 };
+            roundsData.forEach(r => {
+                if (reasons[r.end_reason] !== undefined) {
+                    reasons[r.end_reason]++;
+                } else {
+                    reasons["Other"]++;
+                }
+            });
+
+            if (chartRoundsInstance) chartRoundsInstance.destroy();
+
+            chartRoundsInstance = new Chart(ctx, {
+                type: 'polarArea',
+                data: {
+                    labels: ['Caída de Escuadrón', 'Tiempo Agotado', 'Extracción Estratégica', 'Otros'],
+                    datasets: [{
+                        data: [reasons.TeamWipe, reasons.TimeExpired, reasons.StrategicDecision, reasons.Other],
+                        backgroundColor: [
+                            'rgba(239, 68, 68, 0.5)',
+                            'rgba(245, 158, 11, 0.5)',
+                            'rgba(16, 185, 129, 0.5)',
+                            'rgba(0, 240, 255, 0.5)'
+                        ],
+                        borderColor: '#080c13'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { color: '#94a3b8' } } },
+                    scales: { r: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { display: false } } }
+                }
+            });
+        }
+
+        // ==========================================
+        // 6. TABLES & EXPORT FUNCTIONALITY
+        // ==========================================
+        function renderDeathsTable(filterText = '') {
+            const tbody = document.getElementById('tbody-deaths');
+            const search = filterText.toLowerCase();
+
+            const filtered = deathsData.filter(d => {
+                if (currentMapFilter !== 'all' && d.map_name !== currentMapFilter) return false;
+                if (!search) return true;
+                return (d.cause_of_death || '').toLowerCase().includes(search) ||
+                       (d.map_name || '').toLowerCase().includes(search) ||
+                       (d.player_status || '').toLowerCase().includes(search);
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="empty-state">No se han encontrado registros de muertes con los filtros actuales.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.slice(0, 100).map(d => {
+                const date = d.created_at ? new Date(d.created_at).toLocaleString() : 'N/A';
+                const coords = `(${Math.round(d.pos_x)}, ${Math.round(d.pos_y)}, ${Math.round(d.pos_z)})`;
+                const user = (d.anonymous_user_id || 'Anon').substring(0, 8);
+                return `
+                    <tr>
+                        <td>${date}</td>
+                        <td><span class="tag-map">${d.map_name || 'N/A'}</span></td>
+                        <td><span class="tag-cause">${d.cause_of_death || 'Unknown'}</span></td>
+                        <td>${d.player_status || 'Alive'}</td>
+                        <td style="color: var(--accent-cyan);">${coords}</td>
+                        <td>${Math.round(d.round_time || 0)}s</td>
+                        <td>${d.map_seed || 0}</td>
+                        <td style="color: var(--text-muted);">${user}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderRoundsTable(filterText = '') {
+            const tbody = document.getElementById('tbody-rounds');
+            const search = filterText.toLowerCase();
+
+            const filtered = roundsData.filter(r => {
+                if (currentMapFilter !== 'all' && r.map_name !== currentMapFilter) return false;
+                if (!search) return true;
+                return (r.map_name || '').toLowerCase().includes(search) ||
+                       (r.end_reason || '').toLowerCase().includes(search);
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="empty-state">No se han registrado rondas con los filtros actuales.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.slice(0, 100).map(r => {
+                const date = r.created_at ? new Date(r.created_at).toLocaleString() : 'N/A';
+                const win = r.end_reason !== 'TeamWipe';
+                const resultColor = win ? 'var(--accent-biomass)' : 'var(--accent-danger)';
+                return `
+                    <tr>
+                        <td>${date}</td>
+                        <td><span class="tag-map">${r.map_name || 'N/A'}</span></td>
+                        <td style="color: ${resultColor}; font-weight: 700;">${r.end_reason || 'N/A'}</td>
+                        <td style="color: var(--accent-biomass); font-weight: 700;">${r.biomass_collected || 0}</td>
+                        <td style="color: var(--accent-amber);">${r.money_collected || 0} $</td>
+                        <td>${r.alive_players_count || 0}</td>
+                        <td>${r.minibot_players_count || 0}</td>
+                        <td>${Math.round(r.round_time || 0)}s / ${Math.round(r.max_round_time || 0)}s</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // CSV & JSON Exporter Helper
+        function downloadFile(content, fileName, mimeType) {
+            const a = document.createElement('a');
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            a.setAttribute('href', url);
+            a.setAttribute('download', fileName);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function exportToCSV(data, filename) {
+            if (!data || !data.length) {
+                alert('No hay datos para exportar.');
+                return;
+            }
+            const headers = Object.keys(data[0]);
+            const csvRows = [headers.join(',')];
+
+            data.forEach(row => {
+                const values = headers.map(h => {
+                    const val = row[h] === null || row[h] === undefined ? '' : row[h];
+                    const escaped = ('' + val).replace(/"/g, '""');
+                    return `"${escaped}"`;
+                });
+                csvRows.push(values.join(','));
+            });
+
+            downloadFile(csvRows.join('\n'), filename, 'text/csv;charset=utf-8;');
+        }
+
+        // ==========================================
+        // 7. EVENT LISTENERS & SETUP
+        // ==========================================
+        function setupEventListeners() {
+            // Tab switching
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+
+                    btn.classList.add('active');
+                    const target = document.getElementById(btn.dataset.tab);
+                    if (target) {
+                        target.classList.add('active');
+                        if (btn.dataset.tab === 'tab-heatmap') {
+                            onWindowResize();
+                        }
+                    }
+                });
+            });
+
+            // Map filter change
+            document.getElementById('map-filter').addEventListener('change', (e) => {
+                currentMapFilter = e.target.value;
+                renderDeathsTable();
+                renderRoundsTable();
+                rebuild3DHeatmap();
+            });
+
+            // Refresh button
+            document.getElementById('btn-refresh').addEventListener('click', loadAllTelemetryData);
+
+            // Table search inputs
+            document.getElementById('search-deaths').addEventListener('input', (e) => {
+                renderDeathsTable(e.target.value);
+            });
+            document.getElementById('search-rounds').addEventListener('input', (e) => {
+                renderRoundsTable(e.target.value);
+            });
+
+            // 3D Controls
+            document.getElementById('ctl-color-mode').addEventListener('change', (e) => {
+                currentColorMode = e.target.value;
+                rebuild3DHeatmap();
+            });
+
+            document.getElementById('ctl-cause-filter').addEventListener('change', (e) => {
+                currentCauseFilter = e.target.value;
+                rebuild3DHeatmap();
+            });
+
+            document.getElementById('ctl-point-size').addEventListener('input', (e) => {
+                pointSizeMultiplier = parseFloat(e.target.value);
+                document.getElementById('lbl-point-size').textContent = `${pointSizeMultiplier.toFixed(1)}x`;
+                rebuild3DHeatmap();
+            });
+
+            document.getElementById('ctl-z-scale').addEventListener('input', (e) => {
+                zScaleMultiplier = parseFloat(e.target.value);
+                document.getElementById('lbl-z-scale').textContent = `${zScaleMultiplier.toFixed(1)}x`;
+                rebuild3DHeatmap();
+            });
+
+            // Camera Views
+            document.getElementById('btn-cam-top').addEventListener('click', () => {
+                camera.position.set(0, 900, 0);
+                controls.target.set(0, 0, 0);
+                controls.update();
+                document.getElementById('hud-cam-mode').textContent = 'CENITAL TOP-DOWN VIEW';
+            });
+
+            document.getElementById('btn-cam-reset').addEventListener('click', () => {
+                camera.position.set(0, 450, 650);
+                controls.target.set(0, 0, 0);
+                controls.update();
+                document.getElementById('hud-cam-mode').textContent = 'ORBITAL VIEW';
+            });
+
+            // Export Actions
+            document.getElementById('btn-export-deaths-csv').addEventListener('click', () => {
+                exportToCSV(deathsData, `project_exodus_deaths_${Date.now()}.csv`);
+            });
+            document.getElementById('btn-export-deaths-json').addEventListener('click', () => {
+                downloadFile(JSON.stringify(deathsData, null, 2), `project_exodus_deaths_${Date.now()}.json`, 'application/json');
+            });
+            document.getElementById('btn-export-rounds-csv').addEventListener('click', () => {
+                exportToCSV(roundsData, `project_exodus_rounds_${Date.now()}.csv`);
+            });
+        }
+
+        // ==========================================
+        // 8. INITIALIZE APPLICATION
+        // ==========================================
+        function initApplication() {
+            setupEventListeners();
+            initThreeJS();
+            loadAllTelemetryData();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+        });
+    </script>
+</body>
+</html>
