@@ -1273,9 +1273,43 @@
         </div>
 
         <!-- ==================================================== -->
-        <!-- TAB 4: ROUNDS TABLE                                  -->
+        <!-- TAB 4: ROUNDS TABLE & MISSION STATS                  -->
         <!-- ==================================================== -->
         <div id="tab-rounds" class="tab-panel">
+            <!-- GLOBAL MISSION STATS DASHBOARD -->
+            <div class="economy-stats-grid">
+                <div class="econ-stat-card">
+                    <div class="econ-stat-label">// Dinero Promedio por Ronda</div>
+                    <div class="econ-stat-value" id="round-stat-avg-money">0 $</div>
+                    <div class="econ-stat-sub" id="round-stat-median-money">Mediana: 0 $ | Máx: 0 $</div>
+                </div>
+                <div class="econ-stat-card card-cyan">
+                    <div class="econ-stat-label">// Biomasa Promedio por Ronda</div>
+                    <div class="econ-stat-value" id="round-stat-avg-biomass" style="color: var(--accent-cyan);">0</div>
+                    <div class="econ-stat-sub" id="round-stat-total-biomass">Mediana: 0 | Total: 0 extraída</div>
+                </div>
+                <div class="econ-stat-card">
+                    <div class="econ-stat-label">// Ratio de Evacuación</div>
+                    <div class="econ-stat-value" id="round-stat-win-rate">0%</div>
+                    <div class="econ-stat-sub" id="round-stat-win-counts">0 Victorias | 0 Bajas</div>
+                </div>
+                <div class="econ-stat-card card-amber">
+                    <div class="econ-stat-label">// Duración Media de Misión</div>
+                    <div class="econ-stat-value" id="round-stat-avg-time" style="color: var(--accent-amber);">0s</div>
+                    <div class="econ-stat-sub" id="round-stat-time-sub">Mediana: 0s | Consumo tiempo: 0%</div>
+                </div>
+                <div class="econ-stat-card">
+                    <div class="econ-stat-label">// Mapa Más Lucrativo</div>
+                    <div class="econ-stat-value" id="round-stat-top-money-map" style="font-size: 1.15rem;">-</div>
+                    <div class="econ-stat-sub" id="round-stat-top-money-sub">Promedio: 0 $ / partida</div>
+                </div>
+                <div class="econ-stat-card card-cyan">
+                    <div class="econ-stat-label">// Mapa con Mayor Biomasa</div>
+                    <div class="econ-stat-value" id="round-stat-top-bio-map" style="color: var(--accent-cyan); font-size: 1.15rem;">-</div>
+                    <div class="econ-stat-sub" id="round-stat-top-bio-sub">Promedio: 0 biomasa / partida</div>
+                </div>
+            </div>
+
             <div class="table-card">
                 <div class="table-toolbar">
                     <input type="text" id="search-rounds" class="table-search" placeholder="Buscar por mapa, resultado...">
@@ -1525,6 +1559,7 @@
             updateKPIs();
             renderDeathsTable();
             renderRoundsTable();
+            updateRoundsStats();
             renderEconomyTable();
             updateEconomyStats();
             renderCharts();
@@ -2100,6 +2135,137 @@
             }).join('');
         }
 
+        // ==========================================
+        // GLOBAL MISSION & ROUNDS STATS
+        // ==========================================
+        function updateRoundsStats() {
+            if (!roundsData || !roundsData.length) return;
+
+            const filteredRounds = roundsData.filter(r => {
+                if (currentMapFilter !== 'all' && r.map_name !== currentMapFilter) return false;
+                return true;
+            });
+
+            const dataToUse = filteredRounds.length ? filteredRounds : roundsData;
+
+            const moneys = [];
+            const biomasses = [];
+            const times = [];
+            let wins = 0;
+            let wipes = 0;
+            let totalTimeEfficiency = 0;
+            let efficiencyCount = 0;
+
+            const mapStats = {}; // map_name -> { count, totalMoney, totalBiomass }
+
+            dataToUse.forEach(r => {
+                const money = Number(r.money_collected) || 0;
+                const bio = Number(r.biomass_collected) || 0;
+                const time = Number(r.round_time) || 0;
+                const maxTime = Number(r.max_round_time) || 0;
+
+                moneys.push(money);
+                biomasses.push(bio);
+                times.push(time);
+
+                if (r.end_reason !== 'TeamWipe') {
+                    wins++;
+                } else {
+                    wipes++;
+                }
+
+                if (maxTime > 0) {
+                    totalTimeEfficiency += (time / maxTime);
+                    efficiencyCount++;
+                }
+
+                const mapName = r.map_name || 'Desconocido';
+                if (!mapStats[mapName]) {
+                    mapStats[mapName] = { count: 0, totalMoney: 0, totalBiomass: 0 };
+                }
+                mapStats[mapName].count++;
+                mapStats[mapName].totalMoney += money;
+                mapStats[mapName].totalBiomass += bio;
+            });
+
+            const calcMean = (arr) => arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : 0;
+            const calcMedian = (arr) => {
+                if (!arr.length) return 0;
+                const sorted = [...arr].sort((a, b) => a - b);
+                const mid = Math.floor(sorted.length / 2);
+                return sorted.length % 2 !== 0 ? sorted[mid] : Math.round((sorted[mid - 1] + sorted[mid]) / 2);
+            };
+            const calcMax = (arr) => arr.length ? Math.max(...arr) : 0;
+            const formatTime = (secs) => {
+                const s = Math.round(secs);
+                if (s < 60) return `${s}s`;
+                const m = Math.floor(s / 60);
+                const rem = s % 60;
+                return `${m}m ${rem}s`;
+            };
+
+            const avgMoney = calcMean(moneys);
+            const medianMoney = calcMedian(moneys);
+            const maxMoney = calcMax(moneys);
+
+            const avgBiomass = calcMean(biomasses);
+            const medianBiomass = calcMedian(biomasses);
+            const totalBiomass = biomasses.reduce((a, b) => a + b, 0);
+
+            const winRate = dataToUse.length ? Math.round((wins / dataToUse.length) * 100) : 0;
+            const avgTime = calcMean(times);
+            const medianTime = calcMedian(times);
+            const avgEffPct = efficiencyCount ? Math.round((totalTimeEfficiency / efficiencyCount) * 100) : 0;
+
+            let topMoneyMap = '-';
+            let topMoneyAvg = 0;
+            let topBioMap = '-';
+            let topBioAvg = 0;
+
+            for (const [map, stat] of Object.entries(mapStats)) {
+                const avgM = Math.round(stat.totalMoney / stat.count);
+                const avgB = Math.round(stat.totalBiomass / stat.count);
+                if (avgM > topMoneyAvg) {
+                    topMoneyAvg = avgM;
+                    topMoneyMap = map;
+                }
+                if (avgB > topBioAvg) {
+                    topBioAvg = avgB;
+                    topBioMap = map;
+                }
+            }
+
+            const elAvgMoney = document.getElementById('round-stat-avg-money');
+            if (elAvgMoney) elAvgMoney.textContent = `${avgMoney.toLocaleString()} $`;
+            const elMedianMoney = document.getElementById('round-stat-median-money');
+            if (elMedianMoney) elMedianMoney.textContent = `Mediana: ${medianMoney.toLocaleString()} $ | Máx: ${maxMoney.toLocaleString()} $`;
+
+            const elAvgBio = document.getElementById('round-stat-avg-biomass');
+            if (elAvgBio) elAvgBio.textContent = avgBiomass.toLocaleString();
+            const elTotalBio = document.getElementById('round-stat-total-biomass');
+            if (elTotalBio) elTotalBio.textContent = `Mediana: ${medianBiomass.toLocaleString()} | Total: ${totalBiomass.toLocaleString()}`;
+
+            const elWinRate = document.getElementById('round-stat-win-rate');
+            if (elWinRate) elWinRate.textContent = `${winRate}%`;
+            const elWinCounts = document.getElementById('round-stat-win-counts');
+            if (elWinCounts) elWinCounts.textContent = `${wins} Evacuaciones | ${wipes} Bajas`;
+
+            const elAvgTime = document.getElementById('round-stat-avg-time');
+            if (elAvgTime) elAvgTime.textContent = formatTime(avgTime);
+            const elTimeSub = document.getElementById('round-stat-time-sub');
+            if (elTimeSub) elTimeSub.textContent = `Mediana: ${formatTime(medianTime)} | Consumo tiempo: ${avgEffPct}%`;
+
+            const elTopMoneyMap = document.getElementById('round-stat-top-money-map');
+            if (elTopMoneyMap) elTopMoneyMap.textContent = topMoneyMap;
+            const elTopMoneySub = document.getElementById('round-stat-top-money-sub');
+            if (elTopMoneySub) elTopMoneySub.textContent = `Promedio: ${topMoneyAvg.toLocaleString()} $ / ronda`;
+
+            const elTopBioMap = document.getElementById('round-stat-top-bio-map');
+            if (elTopBioMap) elTopBioMap.textContent = topBioMap;
+            const elTopBioSub = document.getElementById('round-stat-top-bio-sub');
+            if (elTopBioSub) elTopBioSub.textContent = `Promedio: ${topBioAvg.toLocaleString()} biomasa / ronda`;
+        }
+
         function renderEconomyTable(filterText = '') {
             const tbody = document.getElementById('tbody-economy');
             if (!tbody) return;
@@ -2304,6 +2470,7 @@
                 currentMapFilter = e.target.value;
                 renderDeathsTable();
                 renderRoundsTable();
+                updateRoundsStats();
                 rebuild3DHeatmap();
             });
 
