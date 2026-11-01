@@ -448,11 +448,14 @@
             border-bottom: 1px solid var(--border-subtle);
             padding-bottom: 0.5rem;
             overflow-x: auto;
-            scrollbar-width: thin;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
 
         .nav-tabs::-webkit-scrollbar {
-            height: 4px;
+            display: none;
+            width: 0;
+            height: 0;
         }
 
         /* ECONOMY STATS DASHBOARD */
@@ -806,19 +809,25 @@
         }
 
         .table-search {
-            background: var(--bg-deep);
-            border: 1px solid var(--border-subtle);
+            background: #080c13 !important;
+            border: 1px solid var(--border-tactical) !important;
             border-radius: 4px;
-            color: #ffffff;
+            color: #00f0ff !important;
             font-family: var(--font-mono);
             font-size: 0.85rem;
             padding: 0.45rem 0.85rem;
             width: 280px;
             outline: none;
+            box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.6);
+        }
+
+        .table-search::placeholder {
+            color: #475569 !important;
         }
 
         .table-search:focus {
-            border-color: var(--accent-cyan);
+            border-color: var(--accent-cyan) !important;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.25), inset 0 0 8px rgba(0, 0, 0, 0.6) !important;
         }
 
         .export-actions {
@@ -1930,7 +1939,10 @@
                         borderWidth: 2,
                         tension: 0.35,
                         fill: true,
-                        pointBackgroundColor: '#c8db36'
+                        pointBackgroundColor: '#c8db36',
+                        pointBorderColor: '#00f0ff',
+                        pointRadius: 6,
+                        pointHoverRadius: 8
                     }]
                 },
                 options: {
@@ -1940,7 +1952,13 @@
                     plugins: { legend: { display: false } },
                     scales: {
                         x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#64748b' } },
-                        y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#64748b' }, beginAtZero: true }
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#64748b', stepSize: 1, precision: 0 },
+                            beginAtZero: true,
+                            suggestedMin: 0,
+                            suggestedMax: 5
+                        }
                     }
                 }
             });
@@ -1958,16 +1976,19 @@
 
             const labels = Object.keys(counts);
             const data = labels.map(l => counts[l]);
+            const hasData = labels.length > 0;
 
             if (chartCausesInstance) chartCausesInstance.destroy();
 
             chartCausesInstance = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: labels.length ? labels : ['Sin datos'],
+                    labels: hasData ? labels : ['Sin bajas registradas'],
                     datasets: [{
-                        data: data.length ? data : [1],
-                        backgroundColor: ['#ef4444', '#00f0ff', '#f59e0b', '#b536fe', '#c8db36', '#3b82f6'],
+                        data: hasData ? data : [1],
+                        backgroundColor: hasData
+                            ? ['#ef4444', '#00f0ff', '#f59e0b', '#b536fe', '#c8db36', '#3b82f6']
+                            : ['rgba(255, 255, 255, 0.05)'],
                         borderColor: '#080c13',
                         borderWidth: 2
                     }]
@@ -1976,7 +1997,12 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     resizeDelay: 50,
-                    plugins: { legend: { position: 'right', labels: { color: '#94a3b8' } } }
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: { color: hasData ? '#94a3b8' : '#475569' }
+                        }
+                    }
                 }
             });
         }
@@ -2015,7 +2041,13 @@
                     plugins: { legend: { display: false } },
                     scales: {
                         x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#64748b' } },
-                        y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#64748b' }, beginAtZero: true }
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#64748b', stepSize: 1, precision: 0 },
+                            beginAtZero: true,
+                            suggestedMin: 0,
+                            suggestedMax: 5
+                        }
                     }
                 }
             });
