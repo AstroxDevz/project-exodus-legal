@@ -1696,13 +1696,14 @@
                                 <th>Dinero</th>
                                 <th>Vivos</th>
                                 <th>Minibots</th>
+                                <th>Muertos</th>
                                 <th>Tiempo Real / Max</th>
                                 <th style="text-align: center; width: 45px;">✕</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-rounds">
                             <tr>
-                                <td colspan="9" class="empty-state">
+                                <td colspan="10" class="empty-state">
                                     <div class="loading-spinner"></div>
                                     <div>Cargando rondas...</div>
                                 </td>
@@ -2720,7 +2721,7 @@
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="empty-state">No se han registrado rondas con los filtros actuales.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="10" class="empty-state">No se han registrado rondas con los filtros actuales.</td></tr>`;
                 return;
             }
 
@@ -2729,6 +2730,7 @@
                 const win = r.end_reason !== 'TeamWipe';
                 const resultColor = win ? 'var(--accent-biomass)' : 'var(--accent-danger)';
                 const safeReason = (r.end_reason || 'Ronda').replace(/'/g, "\\'");
+                const deadCount = r.dead_players_count !== undefined && r.dead_players_count !== null ? r.dead_players_count : '-';
                 return `
                     <tr>
                         <td>${date}</td>
@@ -2738,6 +2740,7 @@
                         <td style="color: var(--accent-amber);">${r.money_collected || 0} $</td>
                         <td>${r.alive_players_count || 0}</td>
                         <td>${r.minibot_players_count || 0}</td>
+                        <td style="color: var(--accent-danger); font-weight: 700;">${deadCount}</td>
                         <td>${Math.round(r.round_time || 0)}s / ${Math.round(r.max_round_time || 0)}s</td>
                         <td style="text-align: center;">
                             <button class="btn-delete-row" title="Eliminar ronda" onclick="deleteTelemetryRow('telemetry_rounds', '${r.id}', '${safeReason}')">✕</button>
@@ -2777,7 +2780,8 @@
                 const bio = Number(r.biomass_collected) || 0;
                 const time = Number(r.round_time) || 0;
                 const maxTime = Number(r.max_round_time) || 0;
-                const players = Math.max(1, (Number(r.alive_players_count) || 0) + (Number(r.minibot_players_count) || 0));
+                const dead = Number(r.dead_players_count) || 0;
+                const players = Math.max(1, (Number(r.alive_players_count) || 0) + (Number(r.minibot_players_count) || 0) + dead);
 
                 const moneyPerPlayer = money / players;
                 const bioPerPlayer = bio / players;
@@ -3248,6 +3252,7 @@ ORDER BY total_misiones DESC;`,
     COUNT(*) AS partidas, 
     SUM(alive_players_count) AS supervivientes, 
     SUM(minibot_players_count) AS minibots, 
+    SUM(dead_players_count) AS muertos, 
     ROUND(AVG(alive_players_count), 1) AS promedio_vivos 
 FROM rounds 
 GROUP BY map_name;`
@@ -3310,7 +3315,7 @@ GROUP BY map_name;`
         }
 
         const TABLE_COLUMNS = {
-            rounds: ['map_name', 'end_reason', 'biomass_collected', 'money_collected', 'alive_players_count', 'minibot_players_count', 'round_time', 'max_round_time', 'created_at', 'anonymous_user_id'],
+            rounds: ['map_name', 'end_reason', 'biomass_collected', 'money_collected', 'alive_players_count', 'minibot_players_count', 'dead_players_count', 'round_time', 'max_round_time', 'created_at', 'anonymous_user_id'],
             deaths: ['map_name', 'cause_of_death', 'player_status', 'round_time', 'map_seed', 'pos_x', 'pos_y', 'pos_z', 'created_at', 'anonymous_user_id'],
             economy: ['item_name', 'action_type', 'quantity', 'money_amount', 'created_at', 'anonymous_user_id'],
             biomass: ['map_name', 'biomass_delivered', 'created_at', 'anonymous_user_id'],
