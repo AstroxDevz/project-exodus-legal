@@ -2392,6 +2392,22 @@
             }
         }
 
+        function formatDuration(totalSeconds) {
+            if (totalSeconds === null || totalSeconds === undefined || isNaN(totalSeconds) || totalSeconds <= 0) {
+                return '0s';
+            }
+            const s = Math.round(totalSeconds);
+            const hours = Math.floor(s / 3600);
+            const minutes = Math.floor((s % 3600) / 60);
+            const seconds = s % 60;
+
+            const parts = [];
+            if (hours > 0) parts.push(`${hours}h`);
+            if (minutes > 0) parts.push(`${minutes}m`);
+            if (seconds > 0 || parts.length === 0) parts.push(`${seconds}s`);
+            return parts.join(' ');
+        }
+
         async function loadAllTelemetryData() {
             document.getElementById('system-status').textContent = 'Sincronizando...';
 
@@ -2991,7 +3007,7 @@
                         <td><span class="tag-killer" style="color: var(--accent-danger); font-weight: 600;">${killer}</span></td>
                         <td>${d.player_status || 'Alive'}</td>
                         <td style="color: var(--accent-cyan);">${coords}</td>
-                        <td>${Math.round(d.round_time || 0)}s</td>
+                        <td>${formatDuration(d.round_time)}</td>
                         <td>${d.map_seed || 0}</td>
                         <td><span class="tag-user" onclick="filterByOperative('${d.anonymous_user_id || ''}')" title="Filtrar dashboard por este operativo">#${user}</span></td>
                         <td style="text-align: center;">
@@ -3036,7 +3052,7 @@
                         <td>${r.alive_players_count || 0}</td>
                         <td>${r.minibot_players_count || 0}</td>
                         <td style="color: var(--accent-danger); font-weight: 700;">${deadCount}</td>
-                        <td>${Math.round(r.round_time || 0)}s / ${Math.round(r.max_round_time || 0)}s</td>
+                        <td>${formatDuration(r.round_time)} / ${formatDuration(r.max_round_time)}</td>
                         <td><span class="tag-user" onclick="filterByOperative('${r.anonymous_user_id || ''}')" title="Filtrar dashboard por este operativo">#${(r.anonymous_user_id || 'Anon').substring(0, 8)}</span></td>
                         <td style="text-align: center;">
                             <button class="btn-delete-row" title="Eliminar ronda" onclick="deleteTelemetryRow('telemetry_rounds', '${r.id}', '${safeReason}')">✕</button>
@@ -3125,13 +3141,7 @@
                 return sorted.length % 2 !== 0 ? sorted[mid] : Math.round((sorted[mid - 1] + sorted[mid]) / 2);
             };
             const calcMax = (arr) => arr.length ? Math.max(...arr) : 0;
-            const formatTime = (secs) => {
-                const s = Math.round(secs);
-                if (s < 60) return `${s}s`;
-                const m = Math.floor(s / 60);
-                const rem = s % 60;
-                return `${m}m ${rem}s`;
-            };
+            const formatTime = (secs) => formatDuration(secs);
 
             const avgMoney = calcMean(moneys);
             const avgMoneyPerPlayer = calcMean(moneysPerPlayer);
@@ -3996,7 +4006,7 @@ GROUP BY map_name;`
                                         <td style="color: ${winColor}; font-weight: 700;">${r.end_reason || 'N/A'}</td>
                                         <td style="color: var(--accent-amber);">${r.money_collected || 0} $</td>
                                         <td style="color: var(--accent-biomass);">${r.biomass_collected || 0}</td>
-                                        <td>${Math.round(r.round_time || 0)}s</td>
+                                        <td>${formatDuration(r.round_time)} / ${formatDuration(r.max_round_time)}</td>
                                     </tr>`;
                                 }).join('')}
                             </tbody>
