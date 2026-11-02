@@ -3748,6 +3748,394 @@ GROUP BY map_name;`
         }
 
         // ==========================================
+        // ==========================================
+        // OPERATIVES / USERS DOSSIER & FILTER SYSTEM
+        // ==========================================
+        function getOperativesSummary() {
+            const usersMap = {};
+
+            function ensureUser(id) {
+                if (!id) return null;
+                if (!usersMap[id]) {
+                    usersMap[id] = {
+                        id: id,
+                        shortId: id.substring(0, 8),
+                        rounds: [],
+                        deaths: [],
+                        economy: [],
+                        totalMoney: 0,
+                        totalBiomass: 0,
+                        totalDeaths: 0,
+                        totalRounds: 0,
+                        lastSeen: null
+                    };
+                }
+                return usersMap[id];
+            }
+
+            (roundsData || []).forEach(r => {
+                const u = ensureUser(r.anonymous_user_id);
+                if (u) {
+                    u.rounds.push(r);
+                    u.totalRounds++;
+                    u.totalMoney += Number(r.money_collected) || 0;
+                    u.totalBiomass += Number(r.biomass_collected) || 0;
+                    if (r.created_at && (!u.lastSeen || new Date(r.created_at) > new Date(u.lastSeen))) {
+                        u.lastSeen = r.created_at;
+                    }
+                }
+            });
+
+            (deathsData || []).forEach(d => {
+                const u = ensureUser(d.anonymous_user_id);
+                if (u) {
+                    u.deaths.push(d);
+                    u.totalDeaths++;
+                    if (d.created_at && (!u.lastSeen || new Date(d.created_at) > new Date(u.lastSeen))) {
+                        u.lastSeen = d.created_at;
+                    }
+                }
+            });
+
+            (economyData || []).forEach(e => {
+                const u = ensureUser(e.anonymous_user_id);
+                if (u) {
+                    u.economy.push(e);
+                    if ((e.action_type || '').toLowerCase() === 'sale') {
+                        u.totalMoney += Number(e.money_amount) || 0;
+                    }
+                    if (e.created_at && (!u.lastSeen || new Date(e.created_at) > new Date(u.lastSeen))) {
+                        u.lastSeen = e.created_at;
+                    }
+                }
+            });
+
+            return Object.values(usersMap);
+        }
+
+        function populateUserDropdown() {
+            const userSelect = document.getElementById('user-filter');
+            if (!userSelect) return;
+            const operatives = getOperativesSummary();
+            
+            const curVal = currentUserFilter;
+            userSelect.innerHTML = `<option value="all">Todos los Operativos (${operatives.length})</option>`;
+            
+            operatives.sort((a, b) => b.totalRounds - a.totalRounds).forEach(op => {
+                const opt = document.createElement('option');
+                opt.value = op.id;
+                opt.textContent = `Operativo #${op.shortId} (${op.totalRounds} rondas, ${op.totalDeaths} bajas)`;
+                if (op.id === curVal) opt.selected = true;
+                userSelect.appendChild(opt);
+            });
+        }
+
+        function filterByOperative(userId) {
+            if (!userId || userId === 'all') {
+                currentUserFilter = 'all';
+            } else {
+                currentUserFilter = userId;
+            }
+
+            const userSelect = document.getElementById('user-filter');
+            if (userSelect) userSelect.value = currentUserFilter;
+
+            const banner = document.getElementById('active-filter-bar');
+            const bannerText = document.getElementById('active-filter-text');
+            if (banner && bannerText) {
+                if (currentUserFilter !== 'all') {
+                    banner.style.display = 'flex';
+                    bannerText.innerHTML = `FILTRO ACTIVO // Operativo: <strong style="color: var(--accent-cyan);">#${currentUserFilter}</strong>`;
+                } else {
+                    banner.style.display = 'none';
+                }
+            }
+
+            updateKPIs();
+            renderDeathsTable();
+            renderRoundsTable();
+            updateRoundsStats();
+            renderEconomyTable();
+            updateEconomyStats();
+            renderCharts();
+            rebuild3DHeatmap();
+            renderOperativesDossier();
+
+            if (currentUserFilter !== 'all') {
+                showToast(`Filtrando dashboard por Operativo #${currentUserFilter.substring(0, 8)}`);
+            } else {
+                showToast('Filtro de operativo desactivado (mostrando todos)');
+            }
+        }
+
+        function clearUserFilter() {
+            filterByOperative('all');
+        }
+
+        function sortTableBy(tableType, colName) {
+            const s = tableSort[tableType];
+            if (s.col === colName) {
+                s.dir = s.dir === 'asc' ? 'desc' : 'asc';
+            } else {
+                s.col = colName;
+                s.dir = 'asc';
+            }
+
+            const mult = s.dir === 'asc' ? 1 : -1;
+
+            if (tableType === 'deaths') {
+                deathsData.sort((a, b) => {
+                    const valA = (a[colName] || '').toString().toLowerCase();
+                    const valB = (b[colName] || '').toString().toLowerCase();
+                    return valA.localeCompare(valB) * mult;
+                });
+                renderDeathsTable();
+                showToast(`Muertes ordenadas por ${colName} (${s.dir.toUpperCase()})`);
+            } else if (tableType === 'rounds') {
+                roundsData.sort((a, b) => {
+                    const valA = (a[colName] || '').toString().toLowerCase();
+                    const valB = (b[colName] || '').toString().toLowerCase();
+                    return valA.localeCompare(valB) * mult;
+                });
+                renderRoundsTable();
+                showToast(`Rondas ordenadas por ${colName} (${s.dir.toUpperCase()})`);
+            } else if (tableType === 'economy') {
+                economyData.sort((a, b) => {
+                    const valA = (a[colName] || '').toString().toLowerCase();
+                    const valB = (b[colName] || '').toString().toLowerCase();
+                    return valA.localeCompare(valB) * mult;
+                });
+                renderEconomyTable();
+                showToast(`Economía ordenada por ${colName} (${s.dir.toUpperCase()})`);
+            }
+        }
+
+        function renderOperativesDossier(searchFilter = '') {
+            const container = document.getElementById('operatives-accordion-container');
+            if (!container) return;
+
+            const operatives = getOperativesSummary();
+            const search = (searchFilter || (document.getElementById('search-operatives') ? document.getElementById('search-operatives').value : '')).toLowerCase();
+            const sortMode = document.getElementById('sort-operatives') ? document.getElementById('sort-operatives').value : 'rounds_desc';
+
+            // Top Dossier KPIs
+            const totalOps = operatives.length;
+            const totalRounds = operatives.reduce((acc, o) => acc + o.totalRounds, 0);
+            const totalMoney = operatives.reduce((acc, o) => acc + o.totalMoney, 0);
+            const totalDeaths = operatives.reduce((acc, o) => acc + o.totalDeaths, 0);
+
+            const elTotalUsers = document.getElementById('op-stat-total-users');
+            if (elTotalUsers) elTotalUsers.textContent = totalOps.toLocaleString();
+
+            const elAvgRounds = document.getElementById('op-stat-avg-rounds');
+            if (elAvgRounds) elAvgRounds.textContent = totalOps ? (Math.round((totalRounds / totalOps) * 10) / 10).toLocaleString() : '0';
+            const elTotalRoundsSub = document.getElementById('op-stat-total-rounds-sub');
+            if (elTotalRoundsSub) elTotalRoundsSub.textContent = `${totalRounds.toLocaleString()} rondas registradas`;
+
+            const elTotalMoney = document.getElementById('op-stat-total-money');
+            if (elTotalMoney) elTotalMoney.textContent = `${totalMoney.toLocaleString()} $`;
+            const elAvgMoneySub = document.getElementById('op-stat-avg-money-sub');
+            if (elAvgMoneySub) elAvgMoneySub.textContent = `~${totalOps ? Math.round(totalMoney / totalOps).toLocaleString() : 0} $ por jugador`;
+
+            const elTotalDeaths = document.getElementById('op-stat-total-deaths');
+            if (elTotalDeaths) elTotalDeaths.textContent = totalDeaths.toLocaleString();
+            const elAvgDeathsSub = document.getElementById('op-stat-avg-deaths-sub');
+            if (elAvgDeathsSub) elAvgDeathsSub.textContent = `~${totalOps ? (Math.round((totalDeaths / totalOps) * 10) / 10) : 0} bajas por jugador`;
+
+            // Filter
+            let filtered = operatives.filter(op => {
+                if (currentUserFilter !== 'all' && op.id !== currentUserFilter) return false;
+                if (!search) return true;
+                return op.id.toLowerCase().includes(search);
+            });
+
+            // Sort
+            filtered.sort((a, b) => {
+                if (sortMode === 'rounds_desc') return b.totalRounds - a.totalRounds;
+                if (sortMode === 'money_desc') return b.totalMoney - a.totalMoney;
+                if (sortMode === 'biomass_desc') return b.totalBiomass - a.totalBiomass;
+                if (sortMode === 'deaths_desc') return b.totalDeaths - a.totalDeaths;
+                if (sortMode === 'id_asc') return a.id.localeCompare(b.id);
+                return 0;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div style="text-align: center; padding: 2.5rem; color: var(--text-muted); font-family: var(--font-mono);">
+                    No se han encontrado operativos con los filtros actuales.
+                </div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(op => {
+                const dateStr = op.lastSeen ? new Date(op.lastSeen).toLocaleString() : 'Sin actividad';
+                const isFiltered = currentUserFilter === op.id;
+                const borderStyle = isFiltered ? 'border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);' : '';
+
+                // Rounds mini table
+                let roundsHtml = '';
+                if (op.rounds.length > 0) {
+                    roundsHtml = `
+                        <table class="op-mini-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Mapa</th>
+                                    <th>Resultado</th>
+                                    <th>Dinero</th>
+                                    <th>Biomasa</th>
+                                    <th>Duración</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${op.rounds.slice(0, 5).map(r => {
+                                    const win = r.end_reason !== 'TeamWipe';
+                                    const winColor = win ? 'var(--accent-biomass)' : 'var(--accent-danger)';
+                                    return `<tr>
+                                        <td>${r.created_at ? new Date(r.created_at).toLocaleDateString() : 'N/A'}</td>
+                                        <td><span class="tag-map">${r.map_name || 'N/A'}</span></td>
+                                        <td style="color: ${winColor}; font-weight: 700;">${r.end_reason || 'N/A'}</td>
+                                        <td style="color: var(--accent-amber);">${r.money_collected || 0} $</td>
+                                        <td style="color: var(--accent-biomass);">${r.biomass_collected || 0}</td>
+                                        <td>${Math.round(r.round_time || 0)}s</td>
+                                    </tr>`;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                        ${op.rounds.length > 5 ? `<div style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono);">+${op.rounds.length - 5} rondas más (ver en pestaña Rondas)</div>` : ''}
+                    `;
+                } else {
+                    roundsHtml = `<div class="op-empty-note">Sin rondas directas registradas por este cliente.</div>`;
+                }
+
+                // Deaths mini table
+                let deathsHtml = '';
+                if (op.deaths.length > 0) {
+                    deathsHtml = `
+                        <table class="op-mini-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Mapa</th>
+                                    <th>Causa</th>
+                                    <th>Asesino</th>
+                                    <th>Posición</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${op.deaths.slice(0, 5).map(d => {
+                                    return `<tr>
+                                        <td>${d.created_at ? new Date(d.created_at).toLocaleDateString() : 'N/A'}</td>
+                                        <td><span class="tag-map">${d.map_name || 'N/A'}</span></td>
+                                        <td><span class="tag-cause">${d.cause_of_death || 'Unknown'}</span></td>
+                                        <td style="color: var(--accent-danger); font-weight: 600;">${d.killer_name || 'Desconocido'}</td>
+                                        <td style="color: var(--accent-cyan);">(${Math.round(d.pos_x)}, ${Math.round(d.pos_y)})</td>
+                                    </tr>`;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                        ${op.deaths.length > 5 ? `<div style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono);">+${op.deaths.length - 5} bajas más (ver en pestaña Registro de Muertes)</div>` : ''}
+                    `;
+                } else {
+                    deathsHtml = `<div class="op-empty-note">Sin bajas registradas. Sobreviviente intacto.</div>`;
+                }
+
+                // Economy mini table
+                let econHtml = '';
+                if (op.economy.length > 0) {
+                    econHtml = `
+                        <table class="op-mini-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Acción</th>
+                                    <th>Ítem</th>
+                                    <th>Cantidad</th>
+                                    <th>Monto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${op.economy.slice(0, 5).map(e => {
+                                    const isSale = (e.action_type || '').toLowerCase() === 'sale';
+                                    const col = isSale ? 'var(--accent-biomass)' : 'var(--accent-amber)';
+                                    return `<tr>
+                                        <td>${e.created_at ? new Date(e.created_at).toLocaleDateString() : 'N/A'}</td>
+                                        <td style="color: ${col}; font-weight: 700;">${e.action_type || 'N/A'}</td>
+                                        <td style="color: var(--accent-cyan);">${e.item_name || 'Artefacto'}</td>
+                                        <td>${e.quantity || 1}</td>
+                                        <td style="color: ${col}; font-weight: 700;">${e.money_amount || 0} $</td>
+                                    </tr>`;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                        ${op.economy.length > 5 ? `<div style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono);">+${op.economy.length - 5} transacciones más</div>` : ''}
+                    `;
+                } else {
+                    econHtml = `<div class="op-empty-note">Sin transacciones registradas.</div>`;
+                }
+
+                const filterBtnText = isFiltered ? '✕ Quitar Filtro' : '⚡ Filtrar Dashboard por este ID';
+                const filterBtnAction = isFiltered ? "filterByOperative('all')" : `filterByOperative('${op.id}')`;
+
+                return `
+                    <div class="operative-card" id="op-card-${op.id}" style="${borderStyle}">
+                        <div class="operative-header" onclick="toggleOperativeAccordion('${op.id}')">
+                            <div class="op-title-group">
+                                <div class="op-avatar">👤</div>
+                                <div>
+                                    <div class="op-id-text">OPERATIVO #${op.shortId}</div>
+                                    <div style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono);">UUID: ${op.id} | Última actividad: ${dateStr}</div>
+                                </div>
+                            </div>
+
+                            <div class="op-metrics-group">
+                                <span class="op-badge rounds">🎮 ${op.totalRounds} Rondas</span>
+                                <span class="op-badge money">💰 ${op.totalMoney.toLocaleString()} $</span>
+                                <span class="op-badge bio">☣️ ${op.totalBiomass} Bio</span>
+                                <span class="op-badge deaths">💀 ${op.totalDeaths} Bajas</span>
+                                <button class="btn-export" style="font-size: 0.72rem; padding: 0.2rem 0.6rem; margin-left: 0.5rem;" onclick="event.stopPropagation(); ${filterBtnAction};">
+                                    ${filterBtnText}
+                                </button>
+                                <span class="op-chevron" id="op-chev-${op.id}">▼</span>
+                            </div>
+                        </div>
+
+                        <div class="op-body" id="op-body-${op.id}">
+                            <div class="op-section-title">🎮 Rondas Jugadas (${op.rounds.length})</div>
+                            ${roundsHtml}
+
+                            <div class="op-section-title">💀 Bajas Sufridas (${op.deaths.length})</div>
+                            ${deathsHtml}
+
+                            <div class="op-section-title">💰 Transacciones Económicas (${op.economy.length})</div>
+                            ${econHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleOperativeAccordion(opId) {
+            const body = document.getElementById(`op-body-${opId}`);
+            const chev = document.getElementById(`op-chev-${opId}`);
+            if (!body) return;
+            const isOpen = body.style.display === 'block';
+            body.style.display = isOpen ? 'none' : 'block';
+            if (chev) {
+                if (isOpen) chev.classList.remove('open');
+                else chev.classList.add('open');
+            }
+        }
+
+        function expandAllOperatives(bExpand) {
+            const bodies = document.querySelectorAll('.op-body');
+            const chevs = document.querySelectorAll('.op-chevron');
+            bodies.forEach(b => b.style.display = bExpand ? 'block' : 'none');
+            chevs.forEach(c => {
+                if (bExpand) c.classList.add('open');
+                else c.classList.remove('open');
+            });
+        }
+
         // 7. EVENT LISTENERS & SETUP
         // ==========================================
         function setupEventListeners() {
@@ -3767,6 +4155,8 @@ GROUP BY map_name;`
                             setTimeout(() => {
                                 renderCharts();
                             }, 50);
+                        } else if (btn.dataset.tab === 'tab-operatives') {
+                            renderOperativesDossier();
                         } else if (btn.dataset.tab === 'tab-query') {
                             syncAlaSqlTables();
                             updateVisualFilterColumns();
