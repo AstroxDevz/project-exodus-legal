@@ -86,6 +86,11 @@
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(0, 240, 255, 0.5);
         }
+        ::-webkit-scrollbar-button {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
         * {
             scrollbar-width: thin;
             scrollbar-color: rgba(0, 240, 255, 0.25) #080c13;
@@ -1469,6 +1474,7 @@
                     <!-- Floating Tooltip -->
                     <div id="point-tooltip">
                         <div class="tooltip-title" id="tt-cause">Causa de Muerte</div>
+                        <div id="tt-killer" style="color: var(--accent-danger); font-weight: 600; margin-bottom: 0.25rem;">Asesino: Desconocido</div>
                         <div id="tt-pos">X: 0 | Y: 0 | Z: 0</div>
                         <div id="tt-status">Estado: Vivo</div>
                         <div id="tt-map">Mapa: Unknown</div>
@@ -1610,6 +1616,7 @@
                                 <th>Fecha / Hora</th>
                                 <th>Mapa</th>
                                 <th>Causa</th>
+                                <th>Asesino / Ejecutor</th>
                                 <th>Estado</th>
                                 <th>Posición (X, Y, Z)</th>
                                 <th>Tiempo Ronda</th>
@@ -1620,7 +1627,7 @@
                         </thead>
                         <tbody id="tbody-deaths">
                             <tr>
-                                <td colspan="9" class="empty-state">
+                                <td colspan="10" class="empty-state">
                                     <div class="loading-spinner"></div>
                                     <div>Cargando registros telemétricos...</div>
                                 </td>
@@ -2456,6 +2463,8 @@
                     if (idx < deathPointsMeta.length) {
                         const item = deathPointsMeta[idx];
                         document.getElementById('tt-cause').textContent = item.cause_of_death || 'Unknown';
+                        const elKiller = document.getElementById('tt-killer');
+                        if (elKiller) elKiller.textContent = `Asesino: ${item.killer_name || 'Desconocido'}`;
                         document.getElementById('tt-pos').textContent = `X: ${Math.round(item.pos_x)} | Y: ${Math.round(item.pos_y)} | Z: ${Math.round(item.pos_z)}`;
                         document.getElementById('tt-status').textContent = `Estado: ${item.player_status || 'Alive'}`;
                         document.getElementById('tt-map').textContent = `Mapa: ${item.map_name || 'N/A'} (Seed: ${item.map_seed || 0})`;
@@ -2677,12 +2686,13 @@
                 if (currentMapFilter !== 'all' && d.map_name !== currentMapFilter) return false;
                 if (!search) return true;
                 return (d.cause_of_death || '').toLowerCase().includes(search) ||
+                       (d.killer_name || '').toLowerCase().includes(search) ||
                        (d.map_name || '').toLowerCase().includes(search) ||
                        (d.player_status || '').toLowerCase().includes(search);
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="empty-state">No se han encontrado registros de muertes con los filtros actuales.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="10" class="empty-state">No se han encontrado registros de muertes con los filtros actuales.</td></tr>`;
                 return;
             }
 
@@ -2691,11 +2701,13 @@
                 const coords = `(${Math.round(d.pos_x)}, ${Math.round(d.pos_y)}, ${Math.round(d.pos_z)})`;
                 const user = (d.anonymous_user_id || 'Anon').substring(0, 8);
                 const safeCause = (d.cause_of_death || 'Unknown').replace(/'/g, "\\'");
+                const killer = d.killer_name || 'Desconocido';
                 return `
                     <tr>
                         <td>${date}</td>
                         <td><span class="tag-map">${d.map_name || 'N/A'}</span></td>
                         <td><span class="tag-cause">${d.cause_of_death || 'Unknown'}</span></td>
+                        <td><span class="tag-killer" style="color: var(--accent-danger); font-weight: 600;">${killer}</span></td>
                         <td>${d.player_status || 'Alive'}</td>
                         <td style="color: var(--accent-cyan);">${coords}</td>
                         <td>${Math.round(d.round_time || 0)}s</td>
@@ -3316,7 +3328,7 @@ GROUP BY map_name;`
 
         const TABLE_COLUMNS = {
             rounds: ['map_name', 'end_reason', 'biomass_collected', 'money_collected', 'alive_players_count', 'minibot_players_count', 'dead_players_count', 'round_time', 'max_round_time', 'created_at', 'anonymous_user_id'],
-            deaths: ['map_name', 'cause_of_death', 'player_status', 'round_time', 'map_seed', 'pos_x', 'pos_y', 'pos_z', 'created_at', 'anonymous_user_id'],
+            deaths: ['map_name', 'cause_of_death', 'killer_name', 'player_status', 'round_time', 'map_seed', 'pos_x', 'pos_y', 'pos_z', 'created_at', 'anonymous_user_id'],
             economy: ['item_name', 'action_type', 'quantity', 'money_amount', 'created_at', 'anonymous_user_id'],
             biomass: ['map_name', 'biomass_delivered', 'created_at', 'anonymous_user_id'],
             enemies: ['map_name', 'enemy_type', 'quantity', 'created_at', 'anonymous_user_id'],
