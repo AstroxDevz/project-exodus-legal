@@ -2408,6 +2408,21 @@
             return parts.join(' ');
         }
 
+        function cleanCauseName(raw) {
+            if (!raw) return 'Desconocido';
+            let s = raw.toString().trim();
+            s = s.replace(/_C_\d+$/i, '');
+            s = s.replace(/_\d+$/i, '');
+            s = s.replace(/_C$/i, '');
+            s = s.replace(/^BP_/i, '');
+            s = s.replace(/^Default__/i, '');
+            s = s.replace(/^DamageType_/i, '');
+            if (s.toLowerCase() === 'damagetype' || s.toLowerCase() === 'default') {
+                return 'Generico';
+            }
+            return s || 'Desconocido';
+        }
+
         async function loadAllTelemetryData() {
             document.getElementById('system-status').textContent = 'Sincronizando...';
 
@@ -2421,7 +2436,17 @@
             ]);
 
             const deletedIds = getDeletedIds();
-            deathsData = deaths.filter(d => !deletedIds.has(d.id));
+            deathsData = deaths.filter(d => !deletedIds.has(d.id)).map(d => {
+                const cleanCause = cleanCauseName(d.cause_of_death);
+                const rawKiller = d.killer_name && d.killer_name !== 'Desconocido' && d.killer_name !== 'Unknown' 
+                    ? d.killer_name 
+                    : cleanCause;
+                return {
+                    ...d,
+                    cause_of_death: cleanCause,
+                    killer_name: cleanCauseName(rawKiller)
+                };
+            });
             roundsData = rounds.filter(r => !deletedIds.has(r.id));
             biomassData = biomass.filter(b => !deletedIds.has(b.id));
             enemiesData = enemies.filter(en => !deletedIds.has(en.id));
